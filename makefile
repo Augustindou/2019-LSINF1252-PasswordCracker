@@ -1,5 +1,5 @@
-make_me: v1.c
-	gcc -o make_me v1.c
+all: v1.c
+	gcc -o cracker v1.c
 
 clean:
-	rm make_me
+	rm cracker
