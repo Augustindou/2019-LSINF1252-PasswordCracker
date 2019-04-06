@@ -1,5 +1,5 @@
-all: v1.c
-	gcc -o cracker v1.c
+all: src/v1.c
+	gcc -o cracker src/v1.c
 
 clean:
 	rm cracker
