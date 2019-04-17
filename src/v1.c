@@ -18,8 +18,8 @@
 #include <stdlib.h>
 
 //atoi
-#include <stdio.h>
-#include <stdlib.h>
+// #include <stdio.h>
+// #include <stdlib.h>
 #include <string.h>
 
 int main( int argc, char*argv[]){
@@ -37,7 +37,7 @@ int main( int argc, char*argv[]){
 
 	int index = 1;
 
-	// case given number of threads             If no given number, recursive call to main with -t 1 ?? (idea)
+	// case given number of threads
 	char ch[] = "-t";
 	if(argc>2 && !strcmp(argv[index], ch)){
 		int nbThread = atoi(argv[index+1]);
@@ -52,8 +52,8 @@ int main( int argc, char*argv[]){
 	}
 
 	// case consonnes
-	char ch2[] = "-c";
-	if(argc>index && !strcmp(argv[index], ch2)){
+	// char ch2[] = "-c";
+	if(argc>index && !strcmp(argv[index], "-c")){
 		index=index+1;
 		printf("cas des consonnes\n");
 	}
