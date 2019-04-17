@@ -100,9 +100,9 @@ int main( int argc, char*argv[]){
 		//open the file
 		printf("reading the file\n");
 
-		FILE * fd = fopen(argv[index], "rb");
+		FILE * file = fopen(argv[index], "rb");
 		// int fp = open(argv[index], O_RDONLY);
-		if(!fd){
+		if(!file){
 			printf("reading fail");
 			return -1;
 		}
@@ -114,28 +114,53 @@ int main( int argc, char*argv[]){
 
 		//if help needed look at https://stackoverflow.com/questions/979816/whats-a-binary-file-and-how-do-i-create-one
 		//read the file
-		char *n1= malloc(sizeof(char));
-		for(int i=0; i*sizeof(char) < buf->st_size; i++){
+		int sizeread;
+		uint8_t * hash = malloc(sizeof(char)*32);
+		char * resRH = malloc(sizeof(char)*16);
+		if(!hash || !resRH){
+			free(hash); free(resRH);
+			printf("malloc fail\n");
+			return -1;
+		}
+		do{
+			sizeread = fread(hash, sizeof(uint8_t), 32, file);
+			// printf("0x ");
+			// for(int i = 0; i < 32; i++)
+			// {
+			// 	printf("%x ", hash[i]);
+			// }
+			// printf("\n");
 
-			if(read(fp, (int *) n1 +i, sizeof(unsigned char))==-1){return -2;}
-			printf("%x",n1);
-			if((i+1)%32==0){printf("\n");}
+			if(reversehash(hash, resRH, sizeof(char)*16)){
+				printf("%s\n", resRH);
+			}
+			// 2x printf(lastPassWord)
+		} while(sizeread==32);
 
-			// ssize_t read(int fd, void *buf, size_t count);
+
+
+		// char *n1= malloc(sizeof(char));
+		// for(int i=0; i*sizeof(char) < buf->st_size; i++){
+
+		// 	if(read(fp, (int *) n1 +i, sizeof(unsigned char))==-1){return -2;}
+		// 	printf("%x",n1);
+		// 	if((i+1)%32==0){printf("\n");}
+
+			// ssize_t read(int file, void *buf, size_t count);
 			// fread(&val, sizeof(char), 32, )
 
 
-		}
+
 
 
 		//print to check if correctly read
 		//printf("temp = %s\n",temp);
 		//free the memory
 		//free(temp);
-		free(buf);
 
 		//close the file
-		if(close(fp)==-1){return -3;}
+		printf("close file\n");
+		if(fclose(file)==-1){return -3;}
 	}
 	else{
 		printf("please select a file\n");
