@@ -13,6 +13,6 @@
  * @len: longueur maximale de l'inverse
  * @return: true si un inverse a été trouvé, false sinon
  */
-bool reversehash(const uint8_t *hash, char *res, size_t len, char *tmp);
+bool reversehash(const uint8_t *hash, char *res, size_t len);
 
 #endif

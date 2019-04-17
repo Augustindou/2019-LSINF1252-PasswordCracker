@@ -30,11 +30,12 @@ static bool __reversehash(const uint8_t *hash, char *tmp, unsigned int depth,
 	return false;
 }
 
-bool reversehash(const uint8_t *hash, char *res, size_t len, char *tmp)
+bool reversehash(const uint8_t *hash, char *res, size_t len)
 {
 	uint8_t hashres[SHA256_DIGEST_SIZE];
 	unsigned int depth;
 	bool found;
+	char tmp[len+1];
 
 	for (depth = 1; depth <= len; depth++) {
 		found = __reversehash(hash, tmp, depth, 0, hashres);
