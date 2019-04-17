@@ -114,26 +114,28 @@ int main( int argc, char*argv[]){
 
 		//if help needed look at https://stackoverflow.com/questions/979816/whats-a-binary-file-and-how-do-i-create-one
 		//read the file
+		int sizeread;
 		uint8_t * hash = malloc(sizeof(char)*32);
-		if(!hash){
+		char * resRH = malloc(sizeof(char)*16);
+		if(!hash || !resRH){
+			free(hash); free(resRH);
 			printf("malloc fail\n");
 			return -1;
 		}
-		int sizeread = fread(hash, sizeof(uint8_t), 32, file);
-		printf("0x ");
-		for(int i = 0; i < 32; i++)
-		{
-			printf("%x ", hash[i]);
-		}
-		printf("\n");
-		// while(sizeread==32){
-		// 	// put table in buffer
-		// 	sizeread = fread(hash, sizeof(uint8_t), 32, file);
-		// }printf print 0001 instead of 1
+		do{
+			sizeread = fread(hash, sizeof(uint8_t), 32, file);
+			// printf("0x ");
+			// for(int i = 0; i < 32; i++)
+			// {
+			// 	printf("%x ", hash[i]);
+			// }
+			// printf("\n");
 
-		char * resRH = malloc(sizeof(char)*16);
-		reversehash(hash, resRH, sizeof(char)*16);
-
+			if(reversehash(hash, resRH, sizeof(char)*16)){
+				printf("%s\n", resRH);
+			}
+			// 2x printf(lastPassWord)
+		} while(sizeread==32);
 
 
 
