@@ -1,5 +1,5 @@
-﻿################################################################################
-# Ce fichier .gitignore a été automatiquement créé par Microsoft(R) Visual Studio.
-################################################################################
-
+﻿.gitignore
+.vscode
 /.vs/slnx.sqlite
+cracker
+README.pdf
