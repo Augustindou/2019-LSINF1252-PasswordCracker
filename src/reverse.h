@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include <stddef.h>
+
 /* reversehash
  * Calcule l'inverse d'un hash SHA-256 par bruteforce.
  * L'espace de recherche est limité aux lettres minuscules.
