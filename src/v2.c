@@ -16,6 +16,7 @@ pthread_mutex_t mutex;
 sem_t empty; //tested function in test_Semaphore.c
 sem_t full;
 int N;
+int finishProd;
 
 int main(int argc, char *argv[]){
 		//définir les les variables avec argv[], comme dans v1.c
@@ -79,7 +80,7 @@ int main(int argc, char *argv[]){
 		pthread_mutex_init(&mutex, NULL);
 		sem_init(&empty, 0 , N);  // buffer vide
 		sem_init(&full, 0 , 0);   // buffer vide
-		bool finishProd = 0;	  // pas encore la fin du fichier
+		finishProd = 0;	  // pas encore la fin du fichier
 
 		//ouverture de fichier
 		FILE * file = fopen(argv[index], "rb");
@@ -95,24 +96,24 @@ int main(int argc, char *argv[]){
 	pthread_t cons [N];//thread pour reverseHash
 
 	//creation des threads
-	if(pthread_create(&prod, NULL, &producer, NULL)){
+	if(pthread_create(&prod, NULL, producer, NULL)){
 			printf("error while creating production thread\n");
 			return -1;
 	}
 	for(int i=0; i<N; i++){
-		if(pthread_create(&(cons[i]), NULL, &consumer, NULL)){
+		if(pthread_create(&(cons[i]), NULL, consumer, NULL)){
 			printf("error while creating consumer threads\n");
 			return -1;
 		}
 	}
 	
 	//join de threads
-	if(!pthread_join(&prod,NULL)){
+	if(!pthread_join(prod,NULL)){
 			printf("error while pthread_join\n");
 			return -1;
 	}
 	for(int i=0; i<N; i++){
-		if(!pthread_join(&(cons[i]),NULL)){
+		if(!pthread_join((cons[i]),NULL)){
 			printf("error while pthread_join\n");
 			return -1;
 		}//check errors
@@ -128,7 +129,7 @@ int main(int argc, char *argv[]){
 }
 
 //readFile for threads
-unint8_t* readBinFile(FILE* file, uint8_t * hash){
+uint8_t* readBinFile(FILE* file, uint8_t * hash){
 	if(fread(hash, sizeof(uint8_t), 32, file)==32){
 		return hash;
 	}//read file 
@@ -175,7 +176,7 @@ void * consumer(void){
 		return -1;
 	}
 	char * resRH = malloc(sizeof(char)*16);
-	while(!finishProd || getSemValue(&full) )	//check si la production est terminée & vérifie si le tableau est vide 
+	while(!finishProd || getSemValue(&full) )	//check si la production est terminée et vérifie si le tableau est vide 
 	{
 		sem_wait(&full); // attente d'un slot rempli
 		pthread_mutex_lock(&mutex);
@@ -197,7 +198,7 @@ void * consumer(void){
 //permet d'obtenir la valuer du semaphore passer en argument
 int getSemValue(sem_t * sem){
 	int value;
-	sem_getvalue(&sem, &value);
+	sem_getvalue(sem, &value);
 	return value;
 } // it works :D
 
