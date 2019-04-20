@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
+#include <stdbool.h>
+#include <unistd.h>
+#include <semaphore.h>
 
 #include "reverse.h"
 #include "reverse.c"
@@ -12,11 +16,15 @@ int main(int argc, char *argv[]){
 
 	// Initialisation
 	
-		N=10 //à modifier selon le nombre de thread
-		unit8_t * ProdCons = (unit8_t *) calloc(N, sizeof(unit8_t)*32);//create the table
+		N=10; //à modifier selon le nombre de thread
+		uint8_t * ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*32);//create the table
+		if(ProdCons==NULL){
+			printf("calloc ProdCons fail\n");
+			return -1;
+		}
 	
 		pthread_mutex_t mutex;
-		sem_t empty;
+		sem_t empty; //tested function in test_Semaphore.c
 		sem_t full;
 		//pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; 
 		pthread_mutex_init(&mutex, NULL);
@@ -27,7 +35,7 @@ int main(int argc, char *argv[]){
 		//ouverture de fichier
 		FILE * file = fopen(argv[index], "rb");
 		if(!file){
-			printf("reading fail");
+			printf("reading fail\n");
 			return -1;
 		}
 		//pas oublie de fermer le fichier en cas d'erreur
@@ -71,16 +79,9 @@ int main(int argc, char *argv[]){
 }
 
 //readFile for threads
-unint8_t* readBinFile(FILE* file){
-	uint8_t * hash = malloc(sizeof(char)*32);
-	if(!hash){
-		free(hash);
-		printf("malloc fail\n");
-		return -1;
-	}//malloc errors
-
+unint8_t* readBinFile(FILE* file, uint8_t * hash){
 	if(fread(hash, sizeof(uint8_t), 32, file)==32){
-		return (unit8_t *) hash;
+		return (uint8_t *) hash;
 	}//read file 
 	else{
 		finishProd=1;
@@ -93,10 +94,16 @@ unint8_t* readBinFile(FILE* file){
 
 // Producteur, Hash
 void * producer(FILE* file){
-	unint8_t* hash;
+	uint8_t * hash = malloc(sizeof(char)*32);
+	if(!hash){
+		free(hash);
+		printf("malloc fail\n");
+		return -1;
+	}
+
 	while(!finishProd)
 	{
-		hash=readBinFile(file);	//readf() 
+		hash=readBinFile(file, hash);	//readf() 
 		
 		sem_wait(&empty); // attente d'un slot libre
 		pthread_mutex_lock(&mutex);
@@ -106,19 +113,25 @@ void * producer(FILE* file){
 		sem_post(&full); // il y a un slot rempli en plus
 	}
 
+	free(hash);
 	return (NULL);
 }
 
 // Consommateur, reverseHash
 void * consumer(void){
-	unint8_t* hash; //tableau de 32 byte (voir Producteur)
+	uint8_t * hash = malloc(sizeof(char)*32);
+	if(!hash){
+		free(hash);
+		printf("malloc fail\n");
+		return -1;
+	}
 	char * resRH = malloc(sizeof(char)*16);
 	while(!finishProd || getSemValue(&full) )	//check si la production est terminée & vérifie si le tableau est vide 
 	{
 		sem_wait(&full); // attente d'un slot rempli
 		pthread_mutex_lock(&mutex);
 			// section critique
-			hash = removeHash(tab, N); //retirer la chaine de 32 bytes du tableau
+			removeHash(hash, ProdCons, N);
 		pthread_mutex_unlock(&mutex);
 		sem_post(&empty); // il y a un slot libre en plus
 
@@ -127,7 +140,9 @@ void * consumer(void){
 		}//else, le mot de passe ne respecte pas les consignes
 		//puis l'enregistrer dans le prochain
 	}
-	return (NULL);
+
+	free(hash);
+	return;
 }
 
 //permet d'obtenir la valuer du semaphore passer en argument
@@ -135,28 +150,39 @@ int getSemValue(sem_t * sem){
 	int value;
 	sem_getvalue(&sem, &value);
 	return value;
-}
+} // it works :D
 
-//////////////////////////////////////////////////////////////////////
-//encore à implementer
-
-void insertHash(unint8_t* resRH, unit8_t *ProdCons, N){
-	int counter=0;
-	for(int i=0; i<N & !counter; i++){
-	counter=0;
-		//check if the 32 byte equal zero
+//see test in test_InsertHash_RemoveHash.c
+void insertHash(uint8_t* hash, uint8_t *ProdCons, int N){
+	int counter;
+	for(int i=0; i<N; i++){
+		counter=0;
 		for(int j=0; j<32; j++){
 			counter = counter + *(ProdCons+i*32+j);
 		}
-		if (counter==0){
+		if (!counter){
 			for(int j=0; j<32; j++){
-				*(ProdCons+j)=*(resRH+j);
+				*(ProdCons+i*32+j)=*(hash+j);
+			}
+			return;
+		}
+	}
+	return;
+}
+
+void removeHash(uint8_t* hash, uint8_t *ProdCons, int N){
+	int counter=0;
+	for(int i=0; i<N & !counter; i++){
+		counter=0;
+		for(int j=0; j<32; j++){
+			counter = counter + *(ProdCons+i*32+j);
+		}
+		if (counter){
+			for(int j=0; j<32; j++){
+				*(hash+j)=*(ProdCons+i*32+j);
+			    *(ProdCons+i*32+j)=0;
 			}
 		}
 	}
-	return NULL;
-}
-
-void removeHash(unit8_t *ProdCons[], N){
-	//ne pas oublie de remettre la valuer à zéro dans le tableau après de l'avoir extraite
+	return;
 }
