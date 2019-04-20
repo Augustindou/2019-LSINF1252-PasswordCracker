@@ -146,7 +146,10 @@ uint8_t* readBinFile(FILE* file, uint8_t * hash){
 	else{
 		finishProd=1;
 		printf("close file\n");
-		if(!fclose(file)){return NULL;}
+		if(!fclose(file)){
+			printf("error while closing\n");
+			return NULL;
+		}
 	}//end of the file
 
 	return hash;
