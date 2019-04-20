@@ -144,7 +144,7 @@ uint8_t* readBinFile(FILE* file, uint8_t * hash){
 }//return unint8_t* with hash
 
 // Producteur, Hash
-void * producer(){
+static void * producer(){
 	uint8_t * hash = malloc(sizeof(char)*32);
 	if(!hash){
 		free(hash);
@@ -169,7 +169,7 @@ void * producer(){
 }
 
 // Consommateur, reverseHash
-void * consumer(){
+static void * consumer(){
 	uint8_t * hash = malloc(sizeof(char)*32);
 	if(!hash){
 		free(hash);
