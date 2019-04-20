@@ -1,6 +1,6 @@
 #include "reverse.h"
 #include "reverse.c"
-#include "sha256.c"﻿
+#include "sha256.c"
 #include "sha256.h"
 
 #include <stdio.h>
@@ -146,7 +146,7 @@ uint8_t* readBinFile(FILE* file, uint8_t * hash){
 	else{
 		finishProd=1;
 		printf("close file\n");
-		if(!fclose(file)){
+		if(fclose(file)){
 			printf("error while closing\n");
 			return NULL;
 		}
