@@ -12,11 +12,57 @@
 #include "sha256.c"﻿
 
 int main(int argc, char *argv[]){
-	//définir les les variables avec argv[], comme dans v1.c
+		//définir les les variables avec argv[], comme dans v1.c
+		printf("argc = %d \n", argc);
+		for(int i=0; i<argc; i++){
+		printf("argv[%d] = %s, ",i, argv[i]);}
+		printf("\n");
+
+		// case no argument
+		if(argc==1){
+			printf("the function needs at least one argument\n");
+			return -1;
+		}
+
+		int index = 1;
+
+		// case given number of threads
+		if(argc>2 && !strcmp(argv[index], "-t")){
+			int nbThread = atoi(argv[index+1]);
+			if(!nbThread){
+				printf("le nombre de thread est incorrect, veillez reessayer\n");
+				return -1;
+			}
+			else{
+				printf("le nombre de thread est de %d\n", nbThread);
+				index=index+2; //car le "-t" et le nombre
+			}
+		}
+
+		// case consonnes
+		if(argc>index && !strcmp(argv[index], "-c")){
+			index=index+1;
+			printf("cas des consonnes\n");
+		}
+
+		// cas d'output dans un document
+		// a ajouter la condition pour eviter de prendre comme fichier out en fichier in
+		if(argc>index+1 && !strcmp(argv[index], "-o")){
+			if(1){
+				printf("la sortie du programme se fera dans le document %s\n",argv[index+1]);
+				index=index+2;
+			}
+			else{
+                		printf("le nom fichier de sortie est inexistant, veillez reessayer\n");
+                		return -1;
+        		}
+
+		}
+		printf("index = %d, argc = %d\n",index, argc);
 
 	// Initialisation
 	
-		N=10; //à modifier selon le nombre de thread
+		int N=10; //à modifier selon le nombre de thread
 		uint8_t * ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*32);//create the table
 		if(ProdCons==NULL){
 			printf("calloc ProdCons fail\n");
@@ -46,7 +92,7 @@ int main(int argc, char *argv[]){
 	pthread_t cons [N];//thread pour reverseHash
 
 	//creation des threads
-	if(pthread_create(&(prod[i]), NULL, &prod, NULL)){
+	if(pthread_create(&prod, NULL, &prod, NULL)){
 			printf("error while creating production thread\n");
 			return -1;
 	}
@@ -58,12 +104,12 @@ int main(int argc, char *argv[]){
 	}
 	
 	//join de threads
-	if(!pthread_join(prod,NULL){
+	if(!pthread_join(prod,NULL)){
 			printf("error while pthread_join\n");
 			return -1;
 	}
 	for(int i=0; i<N; i++){
-		if(!pthread_join(cons[i],NULL){
+		if(!pthread_join(cons[i],NULL)){
 			printf("error while pthread_join\n");
 			return -1;
 		}//check errors
