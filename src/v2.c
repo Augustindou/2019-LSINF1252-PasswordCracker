@@ -11,6 +11,12 @@
 #include "sha256.h"
 #include "sha256.c"﻿
 
+uint8_t * ProdCons;
+pthread_mutex_t mutex;
+sem_t empty; //tested function in test_Semaphore.c
+sem_t full;
+int N;
+
 int main(int argc, char *argv[]){
 		//définir les les variables avec argv[], comme dans v1.c
 		printf("argc = %d \n", argc);
@@ -62,16 +68,13 @@ int main(int argc, char *argv[]){
 
 	// Initialisation
 	
-		int N=10; //à modifier selon le nombre de thread
-		uint8_t * ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*32);//create the table
+		N=10; //à modifier selon le nombre de thread
+		ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*32);//create the table
 		if(ProdCons==NULL){
 			printf("calloc ProdCons fail\n");
 			return -1;
 		}
 	
-		pthread_mutex_t mutex;
-		sem_t empty; //tested function in test_Semaphore.c
-		sem_t full;
 		//pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; 
 		pthread_mutex_init(&mutex, NULL);
 		sem_init(&empty, 0 , N);  // buffer vide
@@ -92,7 +95,7 @@ int main(int argc, char *argv[]){
 	pthread_t cons [N];//thread pour reverseHash
 
 	//creation des threads
-	if(pthread_create(&prod, NULL, &prod, NULL)){
+	if(pthread_create(&prod, NULL, &producer, NULL)){
 			printf("error while creating production thread\n");
 			return -1;
 	}
@@ -104,12 +107,12 @@ int main(int argc, char *argv[]){
 	}
 	
 	//join de threads
-	if(!pthread_join(prod,NULL)){
+	if(!pthread_join(&prod,NULL)){
 			printf("error while pthread_join\n");
 			return -1;
 	}
 	for(int i=0; i<N; i++){
-		if(!pthread_join(cons[i],NULL)){
+		if(!pthread_join(&(cons[i]),NULL)){
 			printf("error while pthread_join\n");
 			return -1;
 		}//check errors
@@ -117,9 +120,9 @@ int main(int argc, char *argv[]){
 
 	//terminasion
 		free(ProdCons);
-		pthread_mutex_destroy(mutex);
-		sem_destroy(empty);
-		sem_destroy(full);
+		pthread_mutex_destroy(&mutex);
+		sem_destroy(&empty);
+		sem_destroy(&full);
 
 	return 0;
 }
@@ -127,7 +130,7 @@ int main(int argc, char *argv[]){
 //readFile for threads
 unint8_t* readBinFile(FILE* file, uint8_t * hash){
 	if(fread(hash, sizeof(uint8_t), 32, file)==32){
-		return (uint8_t *) hash;
+		return hash;
 	}//read file 
 	else{
 		finishProd=1;
