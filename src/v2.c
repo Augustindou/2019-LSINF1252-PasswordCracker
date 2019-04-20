@@ -118,13 +118,15 @@ int main(int argc, char *argv[]){
 	}
 	
 	//join de threads
-	if(!pthread_join(prod,NULL)){
-			printf("error while pthread_join\n");
-			return -1;
+	if(pthread_join(prod,NULL)==0){
+		printf("prod pthread_join success");	
 	}
+	else{
+		printf("error while prod pthread_join\n");
+		return -1;}
 	for(int i=0; i<N; i++){
 		if(!pthread_join((cons[i]),NULL)){
-			printf("error while pthread_join\n");
+			printf("error while cons[%d] pthread_join\n",i);
 			return -1;
 		}//check errors
 	}
