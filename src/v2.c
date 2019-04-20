@@ -17,6 +17,7 @@ sem_t empty; //tested function in test_Semaphore.c
 sem_t full;
 int N;
 int finishProd;
+FILE* file;
 
 int main(int argc, char *argv[]){
 		//définir les les variables avec argv[], comme dans v1.c
@@ -83,12 +84,12 @@ int main(int argc, char *argv[]){
 		finishProd = 0;	  // pas encore la fin du fichier
 
 		//ouverture de fichier
-		FILE * file = fopen(argv[index], "rb");
+		file = fopen(argv[index], "rb");
 		if(!file){
 			printf("reading fail\n");
 			return -1;
 		}
-		//pas oublie de fermer le fichier en cas d'erreur
+		//pas oublier de fermer le fichier en cas d'erreur
 
 	//le vrai code
 
@@ -136,19 +137,19 @@ uint8_t* readBinFile(FILE* file, uint8_t * hash){
 	else{
 		finishProd=1;
 		printf("close file\n");
-		if(!fclose(file)){return -1;}
+		if(!fclose(file)){return NULL;}
 	}//end of the file
 
 	return hash;
 }//return unint8_t* with hash
 
 // Producteur, Hash
-void * producer(FILE* file){
+void * producer(void){
 	uint8_t * hash = malloc(sizeof(char)*32);
 	if(!hash){
 		free(hash);
 		printf("malloc fail\n");
-		return -1;
+		return NULL;
 	}
 
 	while(!finishProd)
@@ -173,10 +174,10 @@ void * consumer(void){
 	if(!hash){
 		free(hash);
 		printf("malloc fail\n");
-		return -1;
+		return NULL;
 	}
 	char * resRH = malloc(sizeof(char)*16);
-	while(!finishProd || getSemValue(&full) )	//check si la production est terminée et vérifie si le tableau est vide 
+	while(!finishProd || getSemValue(&full) )	//check si la production est terminee et vérifie si le tableau est vide 
 	{
 		sem_wait(&full); // attente d'un slot rempli
 		pthread_mutex_lock(&mutex);
@@ -192,7 +193,7 @@ void * consumer(void){
 	}
 
 	free(hash);
-	return;
+	return NULL;
 }
 
 //permet d'obtenir la valuer du semaphore passer en argument
@@ -202,8 +203,8 @@ int getSemValue(sem_t * sem){
 	return value;
 } // it works :D
 
-//see test in test_InsertHash_RemoveHash.c
-void insertHash(uint8_t* hash, uint8_t *ProdCons, int N){
+//see test in test_InsertHash_RemoveHash
+void insertHash(uint8_t * hash, uint8_t *ProdCons, int N){
 	int counter;
 	for(int i=0; i<N; i++){
 		counter=0;
