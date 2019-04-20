@@ -79,7 +79,7 @@ int main(int argc, char *argv[]){
 
 	// Initialisation
 	
-		N=100; //à modifier selon le nombre de thread
+		N=4; //à modifier selon le nombre de thread
 		ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*32);//create the table
 		if(ProdCons==NULL){
 			printf("calloc ProdCons fail\n");
@@ -118,17 +118,11 @@ int main(int argc, char *argv[]){
 	}
 	
 	//join de threads
-	if(pthread_join(prod,NULL)==0){
-		printf("prod pthread_join success\n");	
-	}
-	else{
+	if(pthread_join(prod,NULL)!=0){
 		printf("error while prod pthread_join\n");
 		return -1;}
 	for(int i=0; i<N; i++){
-		if(pthread_join(cons[i],NULL)==0){
-			printf("cons[%d] pthread_join success\n", i);
-		}
-		else{
+		if(pthread_join(cons[i],NULL)!=0){
 			printf("error while cons[%d] pthread_join\n",i);
 			return -1;
 		}//check errors
