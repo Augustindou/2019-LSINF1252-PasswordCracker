@@ -172,6 +172,7 @@ void * producer(){
 		pthread_mutex_unlock(&mutex);
 		sem_post(&full); // il y a un slot rempli en plus
 	}
+	printf("End producer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
 
 	free(hash);
 	return (NULL);
@@ -201,6 +202,7 @@ void * consumer(){
 		//puis l'enregistrer dans le prochain
 	}
 
+	printf("End consumer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
 	free(hash);
 	return NULL;
 }
