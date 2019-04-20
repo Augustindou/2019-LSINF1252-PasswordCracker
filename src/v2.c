@@ -1,3 +1,8 @@
+#include "reverse.h"
+#include "reverse.c"
+#include "sha256.h"
+#include "sha256.c"﻿
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,11 +10,6 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <semaphore.h>
-
-#include "reverse.h"
-#include "reverse.c"
-#include "sha256.h"
-#include "sha256.c"﻿
 
 uint8_t * ProdCons;
 pthread_mutex_t mutex;
@@ -97,12 +97,12 @@ int main(int argc, char *argv[]){
 	pthread_t cons [N];//thread pour reverseHash
 
 	//creation des threads
-	if(pthread_create(&prod, NULL, producer, NULL)){
+	if(pthread_create(&prod, NULL, &producer, NULL)){
 			printf("error while creating production thread\n");
 			return -1;
 	}
 	for(int i=0; i<N; i++){
-		if(pthread_create(&(cons[i]), NULL, consumer, NULL)){
+		if(pthread_create(&(cons[i]), NULL, &consumer, NULL)){
 			printf("error while creating consumer threads\n");
 			return -1;
 		}
@@ -144,7 +144,7 @@ uint8_t* readBinFile(FILE* file, uint8_t * hash){
 }//return unint8_t* with hash
 
 // Producteur, Hash
-void * producer(void){
+void * producer(){
 	uint8_t * hash = malloc(sizeof(char)*32);
 	if(!hash){
 		free(hash);
@@ -169,7 +169,7 @@ void * producer(void){
 }
 
 // Consommateur, reverseHash
-void * consumer(void){
+void * consumer(){
 	uint8_t * hash = malloc(sizeof(char)*32);
 	if(!hash){
 		free(hash);
