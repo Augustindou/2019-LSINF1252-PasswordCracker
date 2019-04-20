@@ -1,7 +1,7 @@
 #include "reverse.h"
 #include "reverse.c"
-#include "sha256.h"
 #include "sha256.c"﻿
+#include "sha256.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,6 +11,15 @@
 #include <unistd.h>
 #include <semaphore.h>
 
+//functions
+uint8_t* readBinFile(FILE* file, uint8_t * hash);
+void * producer();
+void * consumer();
+int getSemValue(sem_t * sem);
+void insertHash(uint8_t * hash, uint8_t *ProdCons, int N);
+void removeHash(uint8_t* hash, uint8_t *ProdCons, int N);
+
+//variables
 uint8_t * ProdCons;
 pthread_mutex_t mutex;
 sem_t empty; //tested function in test_Semaphore.c
@@ -144,7 +153,7 @@ uint8_t* readBinFile(FILE* file, uint8_t * hash){
 }//return unint8_t* with hash
 
 // Producteur, Hash
-static void * producer(){
+void * producer(){
 	uint8_t * hash = malloc(sizeof(char)*32);
 	if(!hash){
 		free(hash);
@@ -169,7 +178,7 @@ static void * producer(){
 }
 
 // Consommateur, reverseHash
-static void * consumer(){
+void * consumer(){
 	uint8_t * hash = malloc(sizeof(char)*32);
 	if(!hash){
 		free(hash);
