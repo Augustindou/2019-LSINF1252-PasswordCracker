@@ -30,7 +30,7 @@ void removeResRH(char * resRH, char *ProdCons2, int N);
 int push(struct node **head, const char *value);
 int pop(struct node **head);
 int printStack(struct node **head);
-int strlenV(char* candidat, bool consonant)
+int strlenVo(char* candidat, bool consonant)
 
 //variables
 	FILE* file;
@@ -286,11 +286,11 @@ void * sort(){
 			push(&head, resRH);
 		}
 		bool consonne=false;//a definir dans la premiere partie du code
-		else if(strlenV(head->name, consonne)<strlenV(resRH, consonne)){
+		else if(strlenVo(head->name, consonne)<strlenVo(resRH, consonne)){
 			pop(&head);
 			push(&head, resRH);
 		}
-		else if(strlenV(head->name, consonne)==strlenV(resRH, consonne)){
+		else if(strlenVo(head->name, consonne)==strlenVo(resRH, consonne)){
 			push(&head, resRH);
 		}
 		
@@ -437,7 +437,7 @@ int printStack(struct node **head){
 	return 0;
 }
 
-int strlenV(char* candidat, bool consonant){
+int strlenVo(char* candidat, bool consonant){
 	int vowels=0;
 	int len=strlen(candidat);
 	for(i=0; i<len; i++){
