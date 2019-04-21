@@ -168,6 +168,7 @@ int main(int argc, char *argv[]){
 			return -1;
 		}//check errors
 		printf("fin de cons[%d]\n", i);
+		printf("cons done before the if, finishProd2: %d and i: %d", finishProd2, i);
 		if(i==0){
 			printf("cons done before, finishProd2: %d", finishProd2);
 			finishProd2=1;
