@@ -11,6 +11,12 @@
 #include <unistd.h>
 #include <semaphore.h>
 
+//structure
+struct node {
+    node *next;
+    char *name;
+};
+
 //functions
 uint8_t* readBinFile(FILE* file, uint8_t * hash);
 void * producer();
@@ -43,11 +49,7 @@ int printStack(struct node **head);
 
 	struct node * head;
 
-//structure
-struct node {
-    node *next;
-    char *name;
-};
+
 
 int main(int argc, char *argv[]){
 		//définir les les variables avec argv[], comme dans v1.c
@@ -172,7 +174,8 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 
-	printStack(*head);
+	printStack(&head);
+	pop(&head);
 
 	//terminasion
 		//maybe check if errors
@@ -278,12 +281,15 @@ void * sort(){
 			removeResRH(resRH, ProdCons2, N);
 		pthread_mutex_unlock(&mutex2);
 		sem_post(&empty2); // il y a un slot libre en plus
-		if(strlen(*head->name)<strlen(resRH)){
-			pop(*head);
-			push(*head, resRH);
+		if(head==NULL){
+			push(&head, resRH);
+		}
+		else if(strlen(*head->name)<strlen(resRH)){
+			pop(&head);
+			push(&head, resRH);
 		}
 		else if(strlen(*head->name)==strlen(resRH)){
-			push(*head, resRH);
+			push(&head, resRH);
 		}
 		
 	}
@@ -381,13 +387,13 @@ void removeResRH(char * resRH, char *ProdCons2, int N){
 */
 
 int push(struct node **head, const char *value){
-	if(head==NULL||value==NULL){return 1;}
+	if(value==NULL){return 1;}
 	char * varC = (char*)malloc(strlen(value)+1);
 	if (varC==NULL){return 1;}
 	varC = strcpy(varC, value);
 	struct node* newNode = (struct node*) malloc(sizeof(struct node*)+sizeof(char*)) ;
 	if(newNode==NULL){return 1;}
-	newNode->next = *head;
+	newNode->next = *head;//work also for *head==NULL
 	newNode->name = varC;
 	*head=newNode;
 	return 0;
@@ -422,9 +428,9 @@ int pop(struct node **head){
 
 int printStack(struct node **head){
 	struct node * first = *head;
-	while(*first!=NULL){
+	while(first != NULL){
 		printf("%s\n",(first->name));
-		first = first->next;
+		first = (first->next);
 	}
 	return 0;
 }
