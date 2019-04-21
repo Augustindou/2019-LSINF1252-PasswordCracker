@@ -1,17 +1,19 @@
 ﻿#include <stdio.h>
 #include <string.h>
-
-int push(struct node **head, const char *value);
-int pop(struct node **head);
-int printStack(struct node **head);
-
-struct node * head;
+#include <stdlib.h>
 
 //structure
 struct node {
     node *next;
     char *name;
 };
+int push(struct node **head, const char *value);
+int pop(struct node **head);
+int printStack(struct node **head);
+
+struct node * head;
+
+
 
 int main() {
     head=NULL;
