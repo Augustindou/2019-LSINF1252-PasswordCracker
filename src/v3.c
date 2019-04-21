@@ -19,9 +19,11 @@ void * sort();
 int getSemValue(sem_t * sem);
 void insertHash(uint8_t * hash, uint8_t *ProdCons, int N);
 void removeHash(uint8_t* hash, uint8_t *ProdCons, int N);
-void insertResRH(char* resRH, char * ProdCons2, int N);
+void insertResRH(char* resRH, char * ProdCons2, int N);//combiner insertHash avec insertResRH en ajoutant une variable!
 void removeResRH(char * resRH, char *ProdCons2, int N);
 int push(struct node **head, const char *value);
+int pop(struct node **head);
+int printStack(struct node **head);
 
 //variables
 	FILE* file;
@@ -170,6 +172,8 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 
+	printStack(*head);
+
 	//terminasion
 		//maybe check if errors
 		free(ProdCons);
@@ -274,7 +278,14 @@ void * sort(){
 			removeResRH(resRH, ProdCons2, N);
 		pthread_mutex_unlock(&mutex2);
 		sem_post(&empty2); // il y a un slot libre en plus
-		push(*head, resRH);
+		if(strlen(*head->name)<strlen(resRH)){
+			pop(*head);
+			push(*head, resRH);
+		}
+		else if(strlen(*head->name)==strlen(resRH)){
+			push(*head, resRH);
+		}
+		
 	}
 
 	printf("End sort, full2: %d, empty2: %d\n", getSemValue(&full2),getSemValue(&empty2));
@@ -405,6 +416,15 @@ int pop(struct node **head){
 		if(first==NULL && first->name==NULL){
 			return 1;
 		}
+	}
+	return 0;
+}
+
+int printStack(struct node **head){
+	struct node * first = *head;
+	while(*first!=NULL){
+		printf("%s\n",(first->name));
+		first = first->next;
 	}
 	return 0;
 }
