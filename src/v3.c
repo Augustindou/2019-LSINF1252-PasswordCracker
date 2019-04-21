@@ -230,7 +230,7 @@ void * producer(){
 		pthread_mutex_unlock(&mutex);
 		sem_post(&full); // il y a un slot rempli en plus
 	}
-	printf("End producer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
+	//printf("End producer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
 
 	free(hash);
 	return (NULL);
@@ -267,7 +267,9 @@ void * consumer(){
 
 	}
 
-	printf("End consumer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
+	//printf("End consumer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
+	printf("End consumer, full2: %d, empty2: %d, finishProd2:%d\n", getSemValue(&full2),getSemValue(&empty2), finishProd2);
+	
 	free(hash);
 	return NULL;
 }
@@ -276,6 +278,8 @@ void * sort(){
 	char * resRH = malloc(sizeof(char)*16);//16 ou 17?, definir au debut!
 	while(!finishProd2 || getSemValue(&full2) )	//check si la production est terminee et vérifie si le tableau est vide 
 	{
+		if(finishProd2){printf("sort, finishProd2: %d\n", finishProd2);}
+		if(!getSemValue(&full2)){printf("sort, full2: %d\n", getSemValue(&full2));}
 		sem_wait(&full2); // attente d'un slot rempli
 		pthread_mutex_lock(&mutex2);
 			// section critique 2
