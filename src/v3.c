@@ -445,6 +445,7 @@ int strlenV(char* candidat, bool consonant){
            candidat[i]=='o' || candidat[i]=='u' || candidat[i]=='y'){
             vowels++;
         }
+	}
     if(consonant){return len-vowels;}
 	return vowels;
 }
