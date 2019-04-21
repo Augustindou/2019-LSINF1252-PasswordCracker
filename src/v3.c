@@ -162,12 +162,12 @@ int main(int argc, char *argv[]){
 		printf("error while prod pthread_join\n");
 		return -1;
 	}
-	for(int i=0; i<N; i++){
+	for(int i=N; i<=0; i--){
 		if(pthread_join(cons[i],NULL)!=0){
 			printf("error while cons[%d] pthread_join\n",i);
 			return -1;
 		}//check errors
-		printf("fin de cons[%d]", i);
+		printf("fin de cons[%d]\n", i);
 		if(i>=N-1){
 			finishProd2=1;
 			printf("cons done, finishProd2: %d", finishProd2);
