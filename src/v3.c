@@ -30,7 +30,7 @@ void removeResRH(char * resRH, char *ProdCons2, int N);
 int push(struct node **head, const char *value);
 int pop(struct node **head);
 int printStack(struct node **head);
-int strlenVo(char* candidat, bool consonant)
+int strlenVo(char* candidat, bool consonant);
 
 //variables
 	FILE* file;
