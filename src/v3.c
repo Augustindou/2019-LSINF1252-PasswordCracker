@@ -41,10 +41,10 @@ int printStack(struct node **head);
 	sem_t full2;
 	int finishProd2;
 
-	node * head;
+	struct node * head;
 
 //structure
-typedef struct node {
+struct node {
     node *next;
     char *name;
 };
