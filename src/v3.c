@@ -167,7 +167,8 @@ int main(int argc, char *argv[]){
 			printf("error while cons[%d] pthread_join\n",i);
 			return -1;
 		}//check errors
-		if(i==N-1){
+		printf("fin de cons[%d]", i);
+		if(i>=N-1){
 			finishProd2=1;
 			printf("cons done, finishProd2: %d", finishProd2);
 		}
