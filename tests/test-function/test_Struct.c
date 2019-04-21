@@ -19,13 +19,13 @@ int main() {
     head=NULL;
 	char* c="abba";
 	char* d="acca";
-	push(*head, c);
+	push(&head, c);
 	printf("push of c works\n");
-	push(*head, d);
+	push(&head, d);
 	printf("push of d works\n");
-	printStack(*head);
+	printStack(&head);
 	printf("printStack works\n");
-	pop(*head);
+	pop(&head);
 	printf("pull works\n");
 	return 0;
 }
@@ -37,7 +37,7 @@ int push(struct node **head, const char *value){
 	varC = strcpy(varC, value);
 	struct node* newNode = (struct node*) malloc(sizeof(struct node*)+sizeof(char*)) ;
 	if(newNode==NULL){return 1;}
-	newNode->next = &head;//work also for *head==NULL
+	newNode->next = *head;//work also for *head==NULL
 	newNode->name = varC;
 	*head=newNode;
 	return 0;
@@ -49,7 +49,7 @@ int pop(struct node **head){
 		if(first==NULL){return 1;};
 		first=*head;
 
-		head=*(first->next);
+		head=(first->next);
 		free(first->name);
 		free(first);
 		if(first==NULL && first->name==NULL){
