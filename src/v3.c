@@ -13,7 +13,7 @@
 
 //structure
 struct node {
-    node *next;
+    struct node *next;
     char *name;
 };
 
@@ -237,8 +237,8 @@ void * producer(){
 
 // Consommateur, reverseHash
 void * consumer(){
-	uint8_t * resRH = malloc(sizeof(char)*32);
-	if(!resRH){
+	uint8_t * hash = malloc(sizeof(char)*32);
+	if(!hash){
 		free(hash);
 		printf("malloc fail\n");
 		return NULL;
@@ -284,11 +284,11 @@ void * sort(){
 		if(head==NULL){
 			push(&head, resRH);
 		}
-		else if(strlen(*head->name)<strlen(resRH)){
+		else if(strlen(head->name)<strlen(resRH)){
 			pop(&head);
 			push(&head, resRH);
 		}
-		else if(strlen(*head->name)==strlen(resRH)){
+		else if(strlen(head->name)==strlen(resRH)){
 			push(&head, resRH);
 		}
 		

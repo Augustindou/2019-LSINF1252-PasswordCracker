@@ -27,6 +27,8 @@ int main() {
 	printf("printStack works\n");
 	pop(&head);
 	printf("pull works\n");
+	printStack(&head);
+	printf("printStack works\n");
 	return 0;
 }
 
