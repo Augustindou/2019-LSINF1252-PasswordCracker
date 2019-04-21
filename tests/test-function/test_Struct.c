@@ -49,7 +49,7 @@ int pop(struct node **head){
 		if(first==NULL){return 1;};
 		first=*head;
 
-		head=(first->next);
+		*head=(first->next);
 		free(first->name);
 		free(first);
 		if(first==NULL && first->name==NULL){
