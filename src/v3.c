@@ -287,7 +287,7 @@ void * sort(){
 		}
 		bool consonne=false;//a definir dans la premiere partie du code
 		if(head==NULL){
-			push(&head, consonne);
+			push(&head, resRH);
 		}
 		else if(strlenVo(head->name, consonne)<strlenVo(resRH, consonne)){
 			pop(&head);
