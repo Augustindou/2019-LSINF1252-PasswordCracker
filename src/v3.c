@@ -162,7 +162,7 @@ int main(int argc, char *argv[]){
 		printf("error while prod pthread_join\n");
 		return -1;
 	}
-	for(int i=N; i<=0; i--){
+	for(int i=N-1; i>0; i--){
 		if(pthread_join(cons[i],NULL)!=0){
 			printf("error while cons[%d] pthread_join\n",i);
 			return -1;
