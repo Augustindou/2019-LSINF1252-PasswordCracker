@@ -44,7 +44,7 @@ int printStack(struct node **head);
 	node * head;
 
 //structure
-struct node {
+typedef struct node {
     node *next;
     char *name;
 };
