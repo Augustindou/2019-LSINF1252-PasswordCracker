@@ -439,12 +439,11 @@ int printStack(struct node **head){
 
 int strlenV(char* candidat, bool consonant){
 	int vowels=0;
-	int len=strlen(candidat)
+	int len=strlen(candidat);
 	for(i=0; i<len; i++){
         if(candidat[i]=='a' || candidat[i]=='e' || candidat[i]=='i' ||
            candidat[i]=='o' || candidat[i]=='u' || candidat[i]=='y'){
-            vowels++;
-        }
+            vowels++;}
 	}
     if(consonant){return len-vowels;}
 	return vowels;
