@@ -288,7 +288,7 @@ void * sort(){
 	char * resRH = malloc(sizeof(char)*16);//16 ou 17?, definir au debut!
 	while(finishCons==0 || getSemValue(&full2) )	//check si la production est terminee et vérifie si le tableau est vide 
 	{
-		printf("sort, finishCons: %d, full2:%d\n", finishProd2, getSemValue(&full2));}
+		printf("sort, finishCons: %d, full2:%d\n", finishProd2, getSemValue(&full2));
 		//if(!getSemValue(&full2)){printf("sort, full2: %d\n", getSemValue(&full2));}
 		sem_wait(&full2); // attente d'un slot rempli
 		pthread_mutex_lock(&mutex2);
@@ -310,9 +310,8 @@ void * sort(){
 		else if(strlenVo(head->name, consonne)==strlenVo(resRH, consonne)){
 			push(&head, resRH);
 		}
-		if(finishProd2){printf("sort, finishProd2: %d\n", finishProd2);}
 	}
-
+	
 	printf("End sort\n");
 	return NULL;
 }
