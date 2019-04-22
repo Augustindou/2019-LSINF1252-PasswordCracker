@@ -215,6 +215,7 @@ uint8_t* readBinFile(FILE* file, uint8_t * hash){
 			printf("error while closing\n");
 			return NULL;
 		}
+		//attention double le dernier hash trouver une methode pour eviter ca!!
 	}//end of the file
 
 	return hash;
@@ -255,6 +256,7 @@ void * consumer(){
 		return NULL;
 	}
 	char * resRH = malloc(sizeof(char)*16);//16 ou 17?, definir au debut!
+	//malloc fail!
 	while(!finishProd || getSemValue(&full) )	//check si la production est terminee et vérifie si le tableau est vide 
 	{
 		sem_wait(&full); // attente d'un slot rempli
@@ -286,6 +288,7 @@ void * consumer(){
 
 void * sort(){
 	char * resRH = malloc(sizeof(char)*16);//16 ou 17?, definir au debut!
+	//malloc fail!
 	while(finishCons==0 || getSemValue(&full2) )	//check si la production est terminee et vérifie si le tableau est vide 
 	{
 		printf("sort, finishCons: %d, full2:%d\n", finishProd2, getSemValue(&full2));
@@ -301,15 +304,20 @@ void * sort(){
 		}
 		bool consonne=false;//a definir dans la premiere partie du code
 		if(head==NULL){
+			printf("add first %s\n", resRH);
 			push(&head, resRH);
 		}
 		else if(strlenVo(head->name, consonne)<strlenVo(resRH, consonne)){
+			printf("stack erased:\n");
+			printStack(&head);
+			printf("\n");
 			pop(&head);
 			push(&head, resRH);
 		}
 		else if(strlenVo(head->name, consonne)==strlenVo(resRH, consonne)){
 			push(&head, resRH);
 		}
+		//else est plus petit
 	}
 	
 	printf("End sort\n");
@@ -430,7 +438,7 @@ int push(struct node **head, const char *value){
 
 int pop(struct node **head){
 	while(*head!=NULL){
-		struct node * first = (struct node*)malloc(sizeof(struct node*));
+		struct node * first = (struct node*)malloc(sizeof(struct node*)); //malloc fail!
 		if(first==NULL){return 1;};
 		first=*head;
 
