@@ -313,7 +313,7 @@ void * sort(){
 		if(finishProd2){printf("sort, finishProd2: %d\n", finishProd2);}
 	}
 
-	printf("End sort, full2: %d, empty2: %d\n");
+	printf("End sort\n");
 	return NULL;
 }
 
