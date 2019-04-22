@@ -18,19 +18,19 @@ struct node {
 };
 
 // functions
-uint8_t* readBinFile(FILE* file, uint8_t * hash);
-void * producer();
-void * consumer();
-void * sort();
-int getSemValue(sem_t * sem);
-void insertHash(uint8_t * hash, uint8_t *ProdCons, int N);
-void removeHash(uint8_t* hash, uint8_t *ProdCons, int N);
-void insertResRH(char* resRH, char * ProdCons2, int N);//combiner insertHash avec insertResRH en ajoutant une variable!
-void removeResRH(char * resRH, char *ProdCons2, int N);
-int push(struct node **head, const char *value);
-int pop(struct node **head);
-int printStack(struct node **head);
-int strlenVo(char* candidat, bool consonant);
+  uint8_t* readBinFile(FILE* file, uint8_t * hash);
+  void * producer();
+  void * consumer();
+  void * sort();
+  int getSemValue(sem_t * sem);
+  void insertHash(uint8_t * hash, uint8_t *ProdCons, int N);
+  void removeHash(uint8_t* hash, uint8_t *ProdCons, int N);
+  void insertResRH(char* resRH, char * ProdCons2, int N);//combiner insertHash avec insertResRH en ajoutant une variable!
+  void removeResRH(char * resRH, char *ProdCons2, int N);
+  int push(struct node **head, const char *value);
+  int pop(struct node **head);
+  int printStack(struct node **head);
+  int strlenVo(char* candidat, bool consonant);
 
 //variables
 	FILE* file;
@@ -47,6 +47,7 @@ int strlenVo(char* candidat, bool consonant);
 	sem_t empty2;
 	sem_t full2;
 	int finishProd2;
+	int finishCons;
 
 	struct node * head;
 
@@ -114,6 +115,7 @@ int main(int argc, char *argv[]){
 			return -1;
 		}
 		head=NULL;
+		finishCons=0;
 
 		//pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 		pthread_mutex_init(&mutex, NULL);
@@ -161,18 +163,20 @@ int main(int argc, char *argv[]){
 		printf("error while prod pthread_join\n");
 		return -1;
 	}
-	for(int i=N-1; i>=0; i--){
+	for(int i=0; i<N; i++){
 		if(pthread_join(cons[i],NULL)!=0){
 			printf("error while cons[%d] pthread_join\n",i);
 			return -1;
 		}//check errors
 		printf("fin de cons[%d]\n", i);
+		/*
 		printf("cons done before the if, finishProd2: %d and i: %d", finishProd2, i);
 		if(i==0){
 			printf("cons done before, finishProd2: %d", finishProd2);
 			finishProd2=1;
 			printf("cons done, finishProd2: %d", finishProd2);
 		}
+		*/
 	}
 
 	if(pthread_join(cons2,NULL)!=0){
@@ -210,6 +214,7 @@ uint8_t* readBinFile(FILE* file, uint8_t * hash){
 			printf("error while closing\n");
 			return NULL;
 		}
+		//attention double le dernier hash trouver une methode pour eviter ca!!
 	}//end of the file
 
 	return hash;
@@ -271,7 +276,7 @@ void * consumer(){
 		sem_post(&full2); // il y a un slot rempli en plus
 
 	}
-
+	finishCons++;
 	//printf("End consumer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
 	printf("End consumer, full2: %d, empty2: %d, finishProd2:%d\n", getSemValue(&full2),getSemValue(&empty2), finishProd2);
 
@@ -281,9 +286,10 @@ void * consumer(){
 
 void * sort(){
 	char * resRH = malloc(sizeof(char)*16);//16 ou 17?, definir au debut!
-	while(!finishProd2 || getSemValue(&full2) )	//check si la production est terminee et vérifie si le tableau est vide
+	//malloc fail!
+	while(finishCons==0 || getSemValue(&full2) )	//check si la production est terminee et vérifie si le tableau est vide
 	{
-		if(finishProd2){printf("sort, finishProd2: %d\n", finishProd2);}
+		printf("sort, finishCons: %d, full2:%d\n", finishProd2, getSemValue(&full2));
 		//if(!getSemValue(&full2)){printf("sort, full2: %d\n", getSemValue(&full2));}
 		sem_wait(&full2); // attente d'un slot rempli
 		pthread_mutex_lock(&mutex2);
@@ -296,21 +302,23 @@ void * sort(){
 		}
 		bool consonne=false;//a definir dans la premiere partie du code
 		if(head==NULL){
+			printf("add first %s\n", resRH);
 			push(&head, resRH);
 		}
 		else if(strlenVo(head->name, consonne)<strlenVo(resRH, consonne)){
+			printf("stack erased:\n");
+			printStack(&head);
+			printf("\n");
 			pop(&head);
 			push(&head, resRH);
-      printf("Better : %s\n", resRH);
 		}
 		else if(strlenVo(head->name, consonne)==strlenVo(resRH, consonne)){
 			push(&head, resRH);
-      printf("Same : %s\n", resRH);
 		}
-		if(finishProd2){printf("sort, finishProd2: %d\n", finishProd2);}
+		//else est plus petit
 	}
 
-	printf("End sort, full2: %d, empty2: %d\n", getSemValue(&full2),getSemValue(&empty2));
+	printf("End sort\n");
 	return NULL;
 }
 
@@ -428,7 +436,7 @@ int push(struct node **head, const char *value){
 
 int pop(struct node **head){
 	while(*head!=NULL){
-		struct node * first = (struct node*)malloc(sizeof(struct node*));
+		struct node * first = (struct node*)malloc(sizeof(struct node*)); //malloc fail!
 		if(first==NULL){return 1;};
 		first=*head;
 
@@ -459,6 +467,6 @@ int strlenVo(char* candidat, bool consonant){
            candidat[i]=='o' || candidat[i]=='u' || candidat[i]=='y'){
             vowels++;}
 	}
-    if(consonant){return len-vowels;}
+  if(consonant){return len-vowels;}
 	return vowels;
 }
