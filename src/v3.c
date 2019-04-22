@@ -47,6 +47,7 @@ int strlenVo(char* candidat, bool consonant);
 	sem_t empty2; 
 	sem_t full2;
 	int finishProd2;
+	int finishCons;
 
 	struct node * head;
 
@@ -115,7 +116,8 @@ int main(int argc, char *argv[]){
 			return -1;
 		}
 		head=NULL;
-	
+		finishCons=0;
+
 		//pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; 
 		pthread_mutex_init(&mutex, NULL);
 		sem_init(&empty, 0 , N);  // buffer vide
@@ -162,18 +164,20 @@ int main(int argc, char *argv[]){
 		printf("error while prod pthread_join\n");
 		return -1;
 	}
-	for(int i=N-1; i>=0; i--){
+	for(int i=0; i<N; i++){
 		if(pthread_join(cons[i],NULL)!=0){
 			printf("error while cons[%d] pthread_join\n",i);
 			return -1;
 		}//check errors
 		printf("fin de cons[%d]\n", i);
+		/*
 		printf("cons done before the if, finishProd2: %d and i: %d", finishProd2, i);
 		if(i==0){
 			printf("cons done before, finishProd2: %d", finishProd2);
 			finishProd2=1;
 			printf("cons done, finishProd2: %d", finishProd2);
 		}
+		*/
 	}
 	
 	if(pthread_join(cons2,NULL)!=0){
@@ -272,7 +276,7 @@ void * consumer(){
 		sem_post(&full2); // il y a un slot rempli en plus
 
 	}
-
+	finishCons++;
 	//printf("End consumer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
 	printf("End consumer, full2: %d, empty2: %d, finishProd2:%d\n", getSemValue(&full2),getSemValue(&empty2), finishProd2);
 	
@@ -282,7 +286,7 @@ void * consumer(){
 
 void * sort(){
 	char * resRH = malloc(sizeof(char)*16);//16 ou 17?, definir au debut!
-	while(!finishProd2 || getSemValue(&full2) )	//check si la production est terminee et vérifie si le tableau est vide 
+	while(finishCons<N || getSemValue(&full2) )	//check si la production est terminee et vérifie si le tableau est vide 
 	{
 		if(finishProd2){printf("sort, finishProd2: %d\n", finishProd2);}
 		//if(!getSemValue(&full2)){printf("sort, full2: %d\n", getSemValue(&full2));}
