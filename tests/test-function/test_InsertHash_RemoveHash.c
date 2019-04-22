@@ -1,23 +1,24 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 int main() {
-    int N=10;
-    
-	u_int8_t * ProdCons = (u_int8_t *) calloc(N, sizeof(u_int8_t)*32);
+  int N=10;
+
+	uint8_t * ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*32);
 	if(ProdCons==NULL){
 		printf("calloc ProdCons fail\n");
 		return -1;
 	}
-	
-	u_int8_t * hash = malloc(sizeof(char)*32);
+
+	uint8_t * hash = malloc(sizeof(char)*32);
 	if(!hash){
 		free(hash);
 		printf("malloc fail\n");
 		return -1;
 	}
-	
+
 	//hash1
 	for(int i=0; i<32; i++){
 	    *(hash+i)=i;
@@ -34,9 +35,9 @@ int main() {
 	    printf("%d ",*(ProdCons+32+i));
 	}
 	printf("\n");
-    
-	
-	
+
+
+
 	//hash2
 	printf("add2:\n");
 	printf("position 1: ");
@@ -53,7 +54,7 @@ int main() {
 	    printf("%d ",*(ProdCons+32+i));
 	}
 	printf("\n");
-	
+
 	//remove hash1
 	for(int i=0; i<32; i++){
 	    *(hash+i)=i*2;
@@ -65,7 +66,7 @@ int main() {
 	    printf("%d ",*(ProdCons+i));
 	}
 	printf("\n");
-	
+
 	printf("position 2: ");
 	for(int i=0; i<32; i++){
 	    printf("%d ",*(ProdCons+32+i));
@@ -76,7 +77,7 @@ int main() {
 	    printf("%d ",*(hash+i));
 	}
 	printf("\n");
-	
+
 	//remove hash2
 	for(int i=0; i<32; i++){
 	    *(hash+i)=i*2;
@@ -88,7 +89,7 @@ int main() {
 	    printf("%d ",*(ProdCons+i));
 	}
 	printf("\n");
-	
+
 	printf("position 2: ");
 	for(int i=0; i<32; i++){
 	    printf("%d ",*(ProdCons+32+i));
@@ -102,7 +103,7 @@ int main() {
 	return 0;
 }
 
-void insertHash(u_int8_t* hash, u_int8_t *ProdCons, int N){
+void insertHash(uint8_t* hash, uint8_t *ProdCons, int N){
 	int counter;
 	for(int i=0; i<N; i++){
 		counter=0;
@@ -119,7 +120,7 @@ void insertHash(u_int8_t* hash, u_int8_t *ProdCons, int N){
 	}
 }
 
-void removeHash(u_int8_t* hash, u_int8_t *ProdCons, int N){
+void removeHash(uint8_t* hash, uint8_t *ProdCons, int N){
 	//ne pas oublie de remettre la valuer à zéro dans le tableau après de l'avoir extraite
 	int counter=0;
 	for(int i=0; i<N & !counter; i++){

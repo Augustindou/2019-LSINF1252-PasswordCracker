@@ -11,13 +11,13 @@
 #include <unistd.h>
 #include <semaphore.h>
 
-//structure
+// structure
 struct node {
     struct node *next;
     char *name;
 };
 
-//functions
+// functions
 uint8_t* readBinFile(FILE* file, uint8_t * hash);
 void * producer();
 void * consumer();
@@ -44,7 +44,7 @@ int strlenVo(char* candidat, bool consonant);
 	//ProdCons2
 	char * ProdCons2;
 	pthread_mutex_t mutex2;
-	sem_t empty2; 
+	sem_t empty2;
 	sem_t full2;
 	int finishProd2;
 
@@ -94,15 +94,14 @@ int main(int argc, char *argv[]){
 				index=index+2;
 			}
 			else{
-                		printf("le nom fichier de sortie est inexistant, veillez reessayer\n");
-                		return -1;
-        		}
-
+				printf("le nom fichier de sortie est inexistant, veillez reessayer\n");
+				return -1;
+			}
 		}
 		printf("index = %d, argc = %d\n",index, argc);
 
 	// Initialisation
-	
+
 		N=4; //à modifier selon le nombre de thread
 		ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*32);//create the table
 		if(ProdCons==NULL){
@@ -115,8 +114,8 @@ int main(int argc, char *argv[]){
 			return -1;
 		}
 		head=NULL;
-	
-		//pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; 
+
+		//pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 		pthread_mutex_init(&mutex, NULL);
 		sem_init(&empty, 0 , N);  // buffer vide
 		sem_init(&full, 0 , 0);   // buffer vide
@@ -156,7 +155,7 @@ int main(int argc, char *argv[]){
 			printf("error while creating production thread\n");
 			return -1;
 	}
-	
+
 	//join de threads
 	if(pthread_join(prod,NULL)!=0){
 		printf("error while prod pthread_join\n");
@@ -175,7 +174,7 @@ int main(int argc, char *argv[]){
 			printf("cons done, finishProd2: %d", finishProd2);
 		}
 	}
-	
+
 	if(pthread_join(cons2,NULL)!=0){
 		printf("error while cons2 pthread_join\n");
 		return -1;
@@ -203,7 +202,7 @@ int main(int argc, char *argv[]){
 uint8_t* readBinFile(FILE* file, uint8_t * hash){
 	if(fread(hash, sizeof(uint8_t), 32, file)==32){
 		return hash;
-	}//read file 
+	}//read file
 	else{
 		finishProd=1;
 		printf("close file\n");
@@ -227,8 +226,8 @@ void * producer(){
 
 	while(!finishProd)
 	{
-		hash=readBinFile(file, hash);	//readf() 
-		
+		hash=readBinFile(file, hash);	//readf()
+
 		sem_wait(&empty); // attente d'un slot libre
 		pthread_mutex_lock(&mutex);
 			// section critique 1
@@ -245,13 +244,13 @@ void * producer(){
 // Consommateur, reverseHash
 void * consumer(){
 	uint8_t * hash = malloc(sizeof(char)*32);
-	if(!hash){
-		free(hash);
+	char * resRH = malloc(sizeof(char)*16);//16 ou 17?, definir au debut!
+	if(!hash || !resRH){
+		free(hash); free(resRH);
 		printf("malloc fail\n");
 		return NULL;
 	}
-	char * resRH = malloc(sizeof(char)*16);//16 ou 17?, definir au debut!
-	while(!finishProd || getSemValue(&full) )	//check si la production est terminee et vérifie si le tableau est vide 
+	while(!finishProd || getSemValue(&full) )	//check si la production est terminee et vérifie si le tableau est vide
 	{
 		sem_wait(&full); // attente d'un slot rempli
 		pthread_mutex_lock(&mutex);
@@ -267,7 +266,7 @@ void * consumer(){
 		sem_wait(&empty2); // attente d'un slot libre
 		pthread_mutex_lock(&mutex2);
 			// section critique 2
-			insertResRH(resRH, ProdCons2, N);	
+			insertResRH(resRH, ProdCons2, N);
 		pthread_mutex_unlock(&mutex2);
 		sem_post(&full2); // il y a un slot rempli en plus
 
@@ -275,14 +274,14 @@ void * consumer(){
 
 	//printf("End consumer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
 	printf("End consumer, full2: %d, empty2: %d, finishProd2:%d\n", getSemValue(&full2),getSemValue(&empty2), finishProd2);
-	
+
 	free(hash);
 	return NULL;
 }
 
 void * sort(){
 	char * resRH = malloc(sizeof(char)*16);//16 ou 17?, definir au debut!
-	while(!finishProd2 || getSemValue(&full2) )	//check si la production est terminee et vérifie si le tableau est vide 
+	while(!finishProd2 || getSemValue(&full2) )	//check si la production est terminee et vérifie si le tableau est vide
 	{
 		if(finishProd2){printf("sort, finishProd2: %d\n", finishProd2);}
 		//if(!getSemValue(&full2)){printf("sort, full2: %d\n", getSemValue(&full2));}
@@ -302,9 +301,11 @@ void * sort(){
 		else if(strlenVo(head->name, consonne)<strlenVo(resRH, consonne)){
 			pop(&head);
 			push(&head, resRH);
+      printf("Better : %s\n", resRH);
 		}
 		else if(strlenVo(head->name, consonne)==strlenVo(resRH, consonne)){
 			push(&head, resRH);
+      printf("Same : %s\n", resRH);
 		}
 		if(finishProd2){printf("sort, finishProd2: %d\n", finishProd2);}
 	}
@@ -313,7 +314,7 @@ void * sort(){
 	return NULL;
 }
 
-//permet d'obtenir la valuer du semaphore passer en argument
+//permet d'obtenir la valeur du semaphore passé en argument
 int getSemValue(sem_t * sem){
 	int value;
 	sem_getvalue(sem, &value);
@@ -421,8 +422,8 @@ int push(struct node **head, const char *value){
 *
 * @return 0 if no error, 1 otherwise
 *
-* pre : 
-* post : 
+* pre :
+* post :
 */
 
 int pop(struct node **head){
