@@ -224,7 +224,6 @@ uint8_t* readBinFile(FILE* file, uint8_t * hash){
 void * producer(){
 	uint8_t * hash = malloc(sizeof(char)*32);
 	if(!hash){
-		free(hash);
 		printf("malloc fail\n");
 		return NULL;
 	}
@@ -286,7 +285,11 @@ void * consumer(){
 
 void * sort(){
 	char * resRH = malloc(sizeof(char)*16);//16 ou 17?, definir au debut!
-	//malloc fail!
+	if(!resRH) {
+		printf("malloc fail\n");
+		return NULL;
+  }
+
 	while(finishCons==0 || getSemValue(&full2) )	//check si la production est terminee et vérifie si le tableau est vide
 	{
 		printf("sort, finishCons: %d, full2:%d\n", finishProd2, getSemValue(&full2));
@@ -407,16 +410,18 @@ void removeResRH(char * resRH, char *ProdCons2, int N){
 * @head : pointer to the top of the stack
 * @name : the string to be placed in the element at the top of the stack
 *
-* @return 0 if no error, 1 otherwise
+* @return 0 if no error, -1 otherwise
 */
 
 int push(struct node **head, const char *value){
-	if(value==NULL){return 1;}
+	if(value==NULL){return -1;}
 	char * varC = (char*)malloc(strlen(value)+1);
-	if (varC==NULL){return 1;}
-	varC = strcpy(varC, value);
 	struct node* newNode = (struct node*) malloc(sizeof(struct node*)+sizeof(char*)) ;
-	if(newNode==NULL){return 1;}
+	if(!newNode || !varC){
+    free(newNode); free(varC);
+    return -1;
+  }
+	varC = strcpy(varC, value);
 	newNode->next = *head;//work also for *head==NULL
 	newNode->name = varC;
 	*head=newNode;
@@ -428,27 +433,41 @@ int push(struct node **head, const char *value){
 *
 * @head : pointer to the top of the stack
 *
-* @return 0 if no error, 1 otherwise
+* @return 0 if no error, -1 otherwise
 *
 * pre :
 * post :
 */
 
 int pop(struct node **head){
-	while(*head!=NULL){
-		struct node * first = (struct node*)malloc(sizeof(struct node*)); //malloc fail!
-		if(first==NULL){return 1;};
+	while(*head){
+		struct node * first = *head;
 		first=*head;
-
+		*head = first->next;
+		free(first);
+	}
+	return 0;
+}
+/* j'aurais fait autrement... dis moi ce que t'en penses (cf plus haut, j'ai mis ton pop en commentaire)
+- pas nécessaire de malloc, on joue juste avec les pointeurs...
+- je comprends absolument pas ton (free va pas modifier la valeur du pointeur... si y a une erreur dans free c'est indétectable si je ne me trompe pas...)
+		if(first==NULL && first->name==NULL){
+			return -1;
+		} */
+/* int pop(struct node **head){
+	while(*head){ // *head != NULL
+		struct node * first = (struct node*)malloc(sizeof(struct node*));
+		if(first==NULL){return -1;};
+		first=*head;
 		*head=(first->next);
 		free(first->name);
 		free(first);
 		if(first==NULL && first->name==NULL){
-			return 1;
+			return -1;
 		}
 	}
 	return 0;
-}
+}*/
 
 int printStack(struct node **head){
 	struct node * first = *head;
