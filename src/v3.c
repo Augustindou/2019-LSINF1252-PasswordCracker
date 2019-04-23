@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <semaphore.h>
+#include <getopt.h>
 
 // structure
 struct node {
@@ -48,6 +49,7 @@ struct node {
 	sem_t full2;
 	int finishProd2;
 	int finishCons;
+  bool consonne = false;
 
 	struct node * head;
 
@@ -60,50 +62,77 @@ int main(int argc, char *argv[]){
 		printf("argv[%d] = %s, ",i, argv[i]);}
 		printf("\n");
 
-		// case no argument
 		if(argc==1){
 			printf("the function needs at least one argument\n");
 			return -1;
 		}
 
-		int index = 1;
+    int opt;
+    while((opt = getopt(argc, argv, "t:co:"))!=-1){
+      switch (opt)
+      {
+        case 't':
+          N = atoi(optarg);
+          if(!N || N<=0){
+            printf("le nombre de thread est incorrect, veillez reessayer\n");
+            return -1;
+          }
+          break;
+        case 'c':
+          consonne = true;
+          break;
+        case 'o':
+          printf("la sortie du programme se fera dans le document %s\n",optarg);
+          break;
+        case '?':
+          printf("erreur argument");
+          break;
+      }
+      printf("boucle\n");
+    }
+    printf("end of getopt ; optind = %d\n", optind);
 
-		// case given number of threads
-		if(argc>2 && !strcmp(argv[index], "-t")){
-			int nbThread = atoi(argv[index+1]);
-			if(!nbThread){
-				printf("le nombre de thread est incorrect, veillez reessayer\n");
-				return -1;
-			}
-			else{
-				printf("le nombre de thread est de %d\n", nbThread);
-				index=index+2; //car le "-t" et le nombre
-			}
-		}
+		// case no argument
 
-		// case consonnes
-		if(argc>index && !strcmp(argv[index], "-c")){
-			index=index+1;
-			printf("cas des consonnes\n");
-		}
+		// int index = 1;
+
+		// // case given number of threads
+		// if(argc>2 && !strcmp(argv[index], "-t")){
+		// 	int nbThread = atoi(argv[index+1]);
+		// 	if(!nbThread){
+		// 		printf("le nombre de thread est incorrect, veillez reessayer\n");
+		// 		return -1;
+		// 	}
+		// 	else{
+		// 		printf("le nombre de thread est de %d\n", nbThread);
+		// 		index=index+2; //car le "-t" et le nombre
+		// 	}
+		// }
+
+		// // case consonnes
+		// if(argc>index && !strcmp(argv[index], "-c")){
+		// 	index=index+1;
+		// 	printf("cas des consonnes\n");
+		// }
 
 		// cas d'output dans un document
 		// a ajouter la condition pour eviter de prendre comme fichier out en fichier in
-		if(argc>index+1 && !strcmp(argv[index], "-o")){
-			if(1){
-				printf("la sortie du programme se fera dans le document %s\n",argv[index+1]);
-				index=index+2;
-			}
-			else{
-				printf("le nom fichier de sortie est inexistant, veillez reessayer\n");
-				return -1;
-			}
-		}
-		printf("index = %d, argc = %d\n",index, argc);
+		// if(argc>index+1 && !strcmp(argv[index], "-o")){
+		// 	if(1){
+		// 		printf("la sortie du programme se fera dans le document %s\n",argv[index+1]);
+		// 		index=index+2;
+		// 	}
+		// 	else{
+		// 		printf("le nom fichier de sortie est inexistant, veillez reessayer\n");
+		// 		return -1;
+		// 	}
+		// }
+		// printf("index = %d, argc = %d\n",index, argc);
 
 	// Initialisation
 
-		N=4; //à modifier selon le nombre de thread
+
+		// N=4; //à modifier selon le nombre de thread
 		ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*32);//create the table
 		if(ProdCons==NULL){
 			printf("calloc ProdCons fail\n");
@@ -129,7 +158,7 @@ int main(int argc, char *argv[]){
 		finishProd2 = 0;	  // pas encore la fin du bruteforce
 
 		//ouverture de fichier
-		file = fopen(argv[index], "rb");
+		file = fopen(argv[optind], "rb");
 		if(!file){
 			printf("reading fail\n");
 			return -1;
@@ -303,7 +332,7 @@ void * sort(){
 		if(head==NULL){
 			push(&head, resRH);
 		}
-		bool consonne=false;//a definir dans la premiere partie du code
+		// bool consonne=false;//a definir dans la premiere partie du code
 		if(head==NULL){
 			printf("add first %s\n", resRH);
 			push(&head, resRH);
