@@ -92,47 +92,9 @@ int main(int argc, char *argv[]){
     }
     printf("end of getopt ; optind = %d\n", optind);
 
-		// case no argument
-
-		// int index = 1;
-
-		// // case given number of threads
-		// if(argc>2 && !strcmp(argv[index], "-t")){
-		// 	int nbThread = atoi(argv[index+1]);
-		// 	if(!nbThread){
-		// 		printf("le nombre de thread est incorrect, veillez reessayer\n");
-		// 		return -1;
-		// 	}
-		// 	else{
-		// 		printf("le nombre de thread est de %d\n", nbThread);
-		// 		index=index+2; //car le "-t" et le nombre
-		// 	}
-		// }
-
-		// // case consonnes
-		// if(argc>index && !strcmp(argv[index], "-c")){
-		// 	index=index+1;
-		// 	printf("cas des consonnes\n");
-		// }
-
-		// cas d'output dans un document
-		// a ajouter la condition pour eviter de prendre comme fichier out en fichier in
-		// if(argc>index+1 && !strcmp(argv[index], "-o")){
-		// 	if(1){
-		// 		printf("la sortie du programme se fera dans le document %s\n",argv[index+1]);
-		// 		index=index+2;
-		// 	}
-		// 	else{
-		// 		printf("le nom fichier de sortie est inexistant, veillez reessayer\n");
-		// 		return -1;
-		// 	}
-		// }
-		// printf("index = %d, argc = %d\n",index, argc);
 
 	// Initialisation
-
-
-		// N=4; //à modifier selon le nombre de thread
+  
 		ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*32);//create the table
 		if(ProdCons==NULL){
 			printf("calloc ProdCons fail\n");
@@ -318,10 +280,9 @@ void * sort(){
 		printf("malloc fail\n");
 		return NULL;
   }
-
 	while(finishCons==0 || getSemValue(&full2) )	//check si la production est terminee et vérifie si le tableau est vide
 	{
-		printf("sort, finishCons: %d, full2:%d\n", finishProd2, getSemValue(&full2));
+		// printf("sort, finishCons: %d, full2:%d\n", finishProd2, getSemValue(&full2));
 		//if(!getSemValue(&full2)){printf("sort, full2: %d\n", getSemValue(&full2));}
 		sem_wait(&full2); // attente d'un slot rempli
 		pthread_mutex_lock(&mutex2);
