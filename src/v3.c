@@ -206,6 +206,10 @@ int main(int argc, char *argv[]){
     }
   }
   pop(&head);
+  
+  time_t end =time(0);
+  double TheTime = difftime(end, start);
+  printf("program end in %f second\n",TheTime);
 
   //terminasion
     //maybe check if errors
@@ -219,9 +223,9 @@ int main(int argc, char *argv[]){
     sem_destroy(&empty2);
     sem_destroy(&full2);
 
-    time_t end =time(0);
-    double TheTime = difftime(end, start);//Copyright Ben Deloigne
-    printf("program end in %f second\n",TheTime);
+    pthread_mutex_destroy(&mutex3);
+
+    
   return 0;
 }
 
