@@ -2,12 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdbool.h>
+
+int sizeofHash = 32;
+int sizeofString = 17; // 16 + '\0'
+
+void insertHash(uint8_t* hash, uint8_t *ProdCons, int N);
+void insert(uint8_t * A, uint8_t * PC, int N, bool resRH);
+void removeHash(uint8_t* hash, uint8_t *ProdCons, int N);
 
 int main() {
   int N=10;
 
 	uint8_t * ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*32);
-	if(ProdCons==NULL){
+	if(!ProdCons){
 		printf("calloc ProdCons fail\n");
 		return -1;
 	}
@@ -23,7 +31,7 @@ int main() {
 	for(int i=0; i<32; i++){
 	    *(hash+i)=i;
 	}
-	insertHash(hash, ProdCons, N);
+	insert(hash, ProdCons, N, false);
 	printf("add1:\n");
 	printf("position 1: ");
 	for(int i=0; i<32; i++){
@@ -49,7 +57,7 @@ int main() {
 	}
 	printf("\n");
 	printf("position 2: ");
-	insertHash(hash, ProdCons, N);
+	insert(hash, ProdCons, N, false);
 	for(int i=0; i<32; i++){
 	    printf("%d ",*(ProdCons+32+i));
 	}
@@ -118,6 +126,27 @@ void insertHash(uint8_t* hash, uint8_t *ProdCons, int N){
 			return;
 		}
 	}
+}
+
+// if resRH == true => insertResRH ; else => insertHash
+void insert(uint8_t * A, uint8_t * PC, int N, bool resRH){
+  int counter;
+  int sz = sizeofHash;
+  if(resRH){sz = sizeofString;}
+
+  for(int i=0; i<N; i++){
+    counter=0;
+    for(int j=0; j<sz; j++){
+      counter = counter + *(PC+i*sz+j);
+    }
+    if (!counter){
+      for(int j=0; j<sz; j++){
+        *(PC+i*sz+j)=*(A+j);
+      }
+      return;
+    }
+  }
+  return;
 }
 
 void removeHash(uint8_t* hash, uint8_t *ProdCons, int N){
