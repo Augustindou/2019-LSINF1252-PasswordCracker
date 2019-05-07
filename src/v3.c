@@ -27,9 +27,8 @@ struct node {
   void * consumer();
   void * sort();
   int getSemValue(sem_t * sem);
-  void insertHash(uint8_t * hash, uint8_t *ProdCons, int N);
+  void insert(char * A, char * PC, int N, bool resRH);
   void removeHash(uint8_t* hash, uint8_t *ProdCons, int N);
-  void insertResRH(char* resRH, char * ProdCons2, int N);//combiner insertHash avec insertResRH en ajoutant une variable!
   void removeResRH(char * resRH, char *ProdCons2, int N);
   int push(struct node **head, const char *value);
   int pop(struct node **head);
@@ -206,7 +205,7 @@ int main(int argc, char *argv[]){
     }
   }
   pop(&head);
-  
+
   time_t end =time(0);
   double TheTime = difftime(end, start);
   printf("program end in %f second\n",TheTime);
@@ -225,7 +224,7 @@ int main(int argc, char *argv[]){
 
     pthread_mutex_destroy(&mutex3);
 
-    
+
   return 0;
 }
 
@@ -262,7 +261,7 @@ void * producer(){
     sem_wait(&empty); // attente d'un slot libre
     pthread_mutex_lock(&mutex);
       // section critique 1
-      insertHash(hash, ProdCons, N);  //ajout dans le tableau la chaine de sizeofHash (32) byte
+      insert(hash, ProdCons, N, false);  //ajout dans le tableau la chaine de sizeofHash (32) byte
     pthread_mutex_unlock(&mutex);
     sem_post(&full); // il y a un slot rempli en plus
   }
@@ -301,7 +300,7 @@ void * consumer(){
     pthread_mutex_lock(&mutex3);
     pthread_mutex_lock(&mutex2);
       // section critique 2
-      insertResRH(resRH, ProdCons2, N);
+      insert(resRH, ProdCons2, N, true);
     pthread_mutex_unlock(&mutex2);
     sem_post(&full2); // il y a un slot rempli en plus
 
@@ -366,24 +365,6 @@ int getSemValue(sem_t * sem){
   return value;
 } // it works :D
 
-//see test in test_InsertHash_RemoveHash
-void insertHash(uint8_t * hash, uint8_t *ProdCons, int N){
-  int counter;
-  for(int i=0; i<N; i++){
-    counter=0;
-    for(int j=0; j<sizeofHash; j++){
-      counter = counter + *(ProdCons+i*sizeofHash+j);
-    }
-    if (!counter){
-      for(int j=0; j<sizeofHash; j++){
-        *(ProdCons+i*sizeofHash+j)=*(hash+j);
-      }
-      return;
-    }
-  }
-  return;
-}
-
 void removeHash(uint8_t* hash, uint8_t *ProdCons, int N){
   int counter=0;
   for(int i=0; i<N & !counter; i++){
@@ -401,18 +382,20 @@ void removeHash(uint8_t* hash, uint8_t *ProdCons, int N){
   return;
 }
 
-//peut etre combiner avec le precedant avec une variables supplementaire, taille de chaque element
-void insertResRH(char * resRH, char *ProdCons2, int N){
+// if resRH == true => insertResRH ; else => insertHash
+void insert(char * A, char * PC, int N, bool resRH){
   int counter;
-  int nbLettre=sizeofString;
+  int sz = sizeofHash;
+  if(resRH){sz = sizeofString;}
+
   for(int i=0; i<N; i++){
     counter=0;
-    for(int j=0; j<1; j++){
-      counter = counter + *(ProdCons2+i*nbLettre+j);
+    for(int j=0; j<sz; j++){
+      counter = counter + *(PC+i*sz+j);
     }
     if (!counter){
-      for(int j=0; j<nbLettre; j++){
-        *(ProdCons2+i*nbLettre+j)=*(resRH+j);
+      for(int j=0; j<sz; j++){
+        *(PC+i*sz+j)=*(A+j);
       }
       return;
     }
