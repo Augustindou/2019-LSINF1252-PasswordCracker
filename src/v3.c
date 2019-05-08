@@ -20,10 +20,13 @@ struct node {
     struct node *next;
     char *name;
 };
+struct arg {
+    char **argv;
+};
 
 // functions
   uint8_t* readBinFile(FILE* file, uint8_t * hash);
-  void * producer();
+  void * producer(void * arg);
   void * consumer();
   void * sort();
   int getSemValue(sem_t * sem);
@@ -64,7 +67,7 @@ struct node {
   int consFinish = 0;
 
   struct node * head;
-
+  int numberoffiles;
 
 
 int main(int argc, char *argv[]){
@@ -139,12 +142,7 @@ int main(int argc, char *argv[]){
 
     pthread_mutex_init(&mutex3, NULL);
 
-    //ouverture de fichier
-    file = fopen(argv[optind], "rb");
-    if(!file){
-      printf("reading fail\n");
-      return -1;
-    }
+
     //pas oublier de fermer le fichier en cas d'erreur
 
   //le vrai code
@@ -154,15 +152,36 @@ int main(int argc, char *argv[]){
   pthread_t cons2;
 
   //creation des threads
-  if(pthread_create(&prod, NULL, &producer, NULL)){
+  printf("sizeof argv %d", (int)sizeof(strlen(argv[3])) );
+  struct arg* ARG = (struct arg*) malloc(sizeof(int)*2+sizeof(char**)) ;
+  if(ARG==NULL){printf("malloc error\n");}
+  numberoffiles=argc - optind;
+
+  printf("*argv[optind]=%s\n", argv[optind]);
+
+  printf("numberoffiles = %d\n", numberoffiles );
+  ARG->argv=malloc(sizeof(char*) * numberoffiles);
+  if(ARG->argv==NULL){printf("malloc error\n");}
+
+  //pour le bon nombre de fichier
+  for(int i=0; i<numberoffiles; i++){
+    ARG->argv[i]=malloc(strlen(argv[optind+i]));
+    if(ARG->argv[i]==NULL){printf("malloc error\n");}
+    printf("on est cool2\n");
+    ARG->argv[i]=argv[optind+i];
+    printf("%s\n",argv[optind+i] );
+  }
+  if(pthread_create(&prod, NULL, &producer, (void*)ARG)){
       printf("error while creating production thread\n");
       return -1;
   }
+
   for(int i=0; i<N; i++){
     if(pthread_create(&(cons[i]), NULL, &consumer, NULL)){
       printf("error while creating consumer threads\n");
       return -1;
     }
+    printf("create a consumer [%d]\n",i );
   }
   if(pthread_create(&cons2, NULL, &sort, NULL)){
       printf("error while creating production thread\n");
@@ -231,15 +250,22 @@ int main(int argc, char *argv[]){
 //readFile for threads
 uint8_t* readBinFile(FILE* file, uint8_t * hash){
   if(fread(hash, sizeof(uint8_t), sizeofHash, file)==sizeofHash){
+    //print in hex
+    printf("0x ");
+    for(int i = 0; i < 32; i++)
+    {printf("%x", hash[i]); }
+    printf("\n");
     return hash;
   }//read file
   else{
-    finishProd=1;
     printf("close file\n");
     if(fclose(file)){
-      printf("error while closing\n");
+      printf("error while closing");
+      printf("finishProd %d\n", finishProd);
       return NULL;
     }
+    finishProd++;
+    return NULL;
     //attention double le dernier hash trouver une methode pour eviter ca!!
   } //end of the file
 
@@ -247,42 +273,63 @@ uint8_t* readBinFile(FILE* file, uint8_t * hash){
 }//return unint8_t* with hash
 
 // Producteur, Hash
-void * producer(){
-  uint8_t * hash = malloc(sizeof(char)*sizeofHash);
-  if(!hash){
-    printf("malloc fail\n");
-    return NULL;
+void * producer(void * arg){
+
+  char **ARGV=((struct arg*) arg)->argv;
+  for(int i=0; i<numberoffiles; i++){
+    printf("Prod; ARGV[%d] = %s\n", i, ARGV[i]);
   }
 
-  while(!finishProd)
-  {
-    hash=readBinFile(file, hash); //readf()
 
-    sem_wait(&empty); // attente d'un slot libre
-    pthread_mutex_lock(&mutex);
-      // section critique 1
-      insert(hash, ProdCons, N, false);  //ajout dans le tableau la chaine de sizeofHash (32) byte
-    pthread_mutex_unlock(&mutex);
-    sem_post(&full); // il y a un slot rempli en plus
+
+  for(int i =0; i<numberoffiles;i++){
+    //ouverture de fichier
+    file = fopen(ARGV[i], "rb");
+    printf("file is open[%d], %s\n",i, ARGV[i] );
+    if(!file){
+      printf("reading fail\n");
+      return NULL;
+    }
+    uint8_t * hash = malloc(sizeof(char)*sizeofHash);
+    if(!hash){
+      printf("malloc fail\n");
+      return NULL;
+    }
+    bool test=true;
+    while(test){
+      hash=readBinFile(file, hash); //readf()
+      if(hash!=NULL){
+        sem_wait(&empty); // attente d'un slot libre
+        pthread_mutex_lock(&mutex);
+          // section critique 1
+          insert((char*)hash, (char*)ProdCons, N, false);  //ajout dans le tableau la chaine de sizeofHash (32) byte
+        pthread_mutex_unlock(&mutex);
+        sem_post(&full); // il y a un slot rempli en plus
+      }
+      else{
+        test=false;
+      }
+    }
+    test=true;
+    free(hash);
   }
-  //printf("End producer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
 
-  free(hash);
-  return (NULL);
+  printf("end of producer\n");
+  return NULL;
 }
 
 // Consommateur, reverseHash
 void * consumer(){
   uint8_t * hash = malloc(sizeof(char)*sizeofHash);
+  if(hash==NULL){printf("malloc error\n");}
   char * resRH = malloc(sizeof(char)*sizeofString);
   if(!hash || !resRH){
     free(hash); free(resRH);
     printf("malloc fail\n");
     return NULL;
   }
-
   pthread_mutex_lock(&mutex3);
-  while(!finishProd || getSemValue(&full) ) //check si la production est terminee et verifie si le tableau est vide
+  while(finishProd<numberoffiles || getSemValue(&full) ) //check si la production est terminee et verifie si le tableau est vide
   {
     pthread_mutex_unlock(&mutex3);
     sem_wait(&full); // attente d'un slot rempli
@@ -306,7 +353,6 @@ void * consumer(){
 
   }
   consFinish++;
-  printf("End consumer before closing mutex3\n");
   pthread_mutex_unlock(&mutex3);
   //printf("End consumer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
   printf("End consumer, full2: %d, empty2: %d\n", getSemValue(&full2),getSemValue(&empty2));
@@ -367,7 +413,7 @@ int getSemValue(sem_t * sem){
 
 void removeHash(uint8_t* hash, uint8_t *ProdCons, int N){
   int counter=0;
-  for(int i=0; i<N & !counter; i++){
+  for(int i=0; (i<N) & !counter; i++){
     counter=0;
     for(int j=0; j<sizeofHash; j++){
       counter = counter + *(ProdCons+i*sizeofHash+j);
@@ -406,7 +452,7 @@ void insert(char * A, char * PC, int N, bool resRH){
 void removeResRH(char * resRH, char *ProdCons2, int N){
   int counter=0;
   int nbLettre=sizeofString;
-  for(int i=0; i<N & !counter; i++){
+  for(int i=0; (i<N) & !counter; i++){
     counter=0;
     for(int j=0; j<nbLettre; j++){
       counter = counter + *(ProdCons2+i*nbLettre+j);
@@ -433,6 +479,7 @@ void removeResRH(char * resRH, char *ProdCons2, int N){
 int push(struct node **head, const char *value){
   if(value==NULL){return -1;}
   char * varC = (char*)malloc(strlen(value)+1);
+  if(varC==NULL){printf("malloc error\n");}
   struct node* newNode = (struct node*) malloc(sizeof(struct node*)+sizeof(char*)) ;
   if(!newNode || !varC){
     free(newNode); free(varC);
@@ -508,6 +555,7 @@ int saveToFile(struct node ** head, FILE * OutputFile){
 
 // return true if sort should continue sorting ; false if not
 bool sortCond(){
+  printf("I'm checking sortCond\n");
   if(getSemValue(&empty2) != N){
     printf("SV\n");
     return true;
@@ -516,13 +564,14 @@ bool sortCond(){
     pthread_mutex_unlock(&mutex3);
     printf("TL, consFinish = %d\n",consFinish);
     if(consFinish >= N){//changed
+      printf("return false in CondSort\n");
       return false;
     }
     return true;
   }
   else
   {
-    sleep(1);
+    //sleep(1);
     return sortCond();
   }
 }
