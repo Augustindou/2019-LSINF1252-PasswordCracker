@@ -310,7 +310,7 @@ void * consumer(){
     if(err!=0){intError(err, "sem_post empty error");}
 
     err = reversehash(hash, resRH, sizeof(char)*SIZE_OF_STRING);
-    if(!err){stringError("reverseHash error");} //need to refer to reverse.c
+    if(!err){stringError("no inverse found to hash");} //need to refer to reverse.c
 
     err = sem_wait(&empty2); // wait for an empty slot
     if(err!=0){intError(err, "sem_wait empty2 error");}
