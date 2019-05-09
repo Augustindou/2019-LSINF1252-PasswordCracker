@@ -1,3 +1,6 @@
+#define SIZE_OF_HASH 32
+#define SIZE_OF_STRING 17
+
 #include "reverse.h"
 #include "reverse.c"
 #include "sha256.c"
@@ -19,6 +22,7 @@ struct node {
     struct node *next;
     char *name;
 };
+// arg structure for valid argument in pthread_create
 struct arg {
     char **argv;
 };
@@ -26,177 +30,175 @@ struct arg {
 /*---------------------------------------------------------------------------*/
 /*     Thread-based functions                                                */
 /*---------------------------------------------------------------------------*/
-  /**
-   * Adds new hashes from binary file to first buffer
-   *
-   * @arg : ** first bin file
-   *
-   * @return //TODO --------------------------------------------------------------------
-   */
-  void * producer(void * arg);
-  /**
-   * Gets hashes from first buffer
-   * Bruteforce hash => password
-   * Adds passwords to second buffer
-   *
-   * @return //TODO --------------------------------------------------------------------
-   */
-  void * consumer();
-  /**
-   * Gets passwords from second buffer
-   * Checks if password is better than last ones
-   * If better : frees the stack and add new password
-   * If equal : adds password to stack
-   * If worse : discards new password
-   *
-   * @return //TODO --------------------------------------------------------------------
-   */
-  void * sort();
+/**
+ * Adds new hashes from binary file to first buffer
+ *
+ * @arg : ** first bin file
+ *
+ * @return NULL
+ */
+void * producer(void * arg);
+/**
+ * Gets hashes from first buffer
+ * Bruteforce hash => password
+ * Adds passwords to second buffer
+ *
+ * @return NULL
+ */
+void * consumer();
+/**
+ * Gets passwords from second buffer
+ * Checks if password is better than last ones
+ * If better : frees the stack and add new password
+ * If equal : adds password to stack
+ * If worse : discards new password
+ *
+ * @return NULL
+ */
+void * sort();
 /*---------------------------------------------------------------------------*/
 /*     Buffer-based functions                                                */
 /*---------------------------------------------------------------------------*/
 
-  /**
-   * Inserts byte array in buffer
-   *
-   * @A : *value to be inserted
-   * @PC : *buffer
-   * @N : Size of buffer (== number of threads)
-   * @resRH : if true => A is a candidate ; if false => A is a hash
-   */
-  void insertInBuffer(char * A, char * PC, int N, bool resRH);
-  /**
-   * Removes byte array from buffer
-   *
-   * @A : *removed value
-   * @PC : *buffer
-   * @N : Size of buffer (== number of threads)
-   * @resRH : if true => A is a candidate ; if false => A is a hash
-   */
-  void removeFromBuffer(char* A, char *PC, int N, bool resRH);
+/**
+ * Inserts byte array in buffer
+ *
+ * @A : *value to be inserted
+ * @PC : *buffer
+ * @N : Size of buffer (== number of threads)
+ * @resRH : if true => A is a candidate ; if false => A is a hash
+ */
+void insertInBuffer(char * A, char * PC, int N, bool resRH);
+/**
+ * Removes byte array from buffer
+ *
+ * @A : *removed value
+ * @PC : *buffer
+ * @N : Size of buffer (== number of threads)
+ * @resRH : if true => A is a candidate ; if false => A is a hash
+ */
+void removeFromBuffer(char* A, char *PC, int N, bool resRH);
 
 /*---------------------------------------------------------------------------*/
 /*     Stack-based functions                                                 */
 /*---------------------------------------------------------------------------*/
 
-  /**
-   * Add @value at the "top" of the stack.
-   *
-   * @head : pointer to the top of the stack
-   * @value : the string to be placed in the element at the top of the stack
-   *
-   * @return 0 if no error, -1 otherwise
-   */
-  int push(struct node **head, const char *value);
-  /**
-   * Free all elements of the stack.
-   *
-   * @head : pointer to the top of the stack
-   *
-   * @return 0 if no error, -1 otherwise
-   */
-  int pop(struct node **head);
-  /**
-   * Print all elements of the stack.
-   *
-   * @head : pointer to the top of the stack
-   *
-   * @return 0 if no error, -1 otherwise
-   */
-  int printStack(struct node **head);
-  /**
-   * Saves stack in outputFile
-   *
-   * @head : top of the stack
-   * @outputFile : *FILE where the passwords should be written
-   *
-   * @return 0 if no error, -1 otherwise
-   */
-  int saveToFile(struct node ** head, FILE * outputFile);
+/**
+ * Add @value at the "top" of the stack.
+ *
+ * @head : pointer to the top of the stack
+ * @value : the string to be placed in the element at the top of the stack
+ *
+ * @return 0 if no error, -1 otherwise
+ */
+int push(struct node **head, const char *value);
+/**
+ * Free all elements of the stack.
+ *
+ * @head : pointer to the top of the stack
+ */
+void pop(struct node ** head);
+/**
+ * Print all elements of the stack.
+ *
+ * @head : pointer to the top of the stack
+ */
+void printStack(struct node **head);
+/**
+ * Saves stack in outputFile
+ *
+ * @head : top of the stack
+ * @outputFile : *FILE where the passwords should be written
+ *
+ * @return 0 if no error, -1 otherwise
+ */
+int saveToFile(struct node ** head, FILE * outputFile);
 
 /*---------------------------------------------------------------------------*/
 /*     Small functions                                                       */
 /*---------------------------------------------------------------------------*/
 
-  /**
-   * Calculate number of vowels or consonants for a given candidate
-   *
-   * @candidate : string to be checked
-   * @consonant : if true => count consonants ; else => count vowels
-   *
-   * @return number of vowels/consonants in candidate
-   */
-  int strlenVo(char* candidate, bool consonant);
-  /**
-   * Checks if program should continue sorting
-   *
-   * @return true if sort should continue ; false otherwise
-   */
-  bool sortCond();
-  /**
-   * transforms sem_getValue() to have value returned
-   *
-   * @sem : semaphore to check
-   *
-   * @return value of semaphore
-   */
-  int getSemValue(sem_t * sem);
-  /**
-   * Reads the next hash from the binary file and returns it
-   * Closes file if no more hashes left
-   *
-   * @file : //TODO -------------------------------------------------------------------
-   * @hash : //TODO -------------------------------------------------------------------
-   *
-   * @return 0 if no error, -1 otherwise
-   */
-  uint8_t* readBinFile(FILE* file, uint8_t * hash);
+/**
+ * Calculate number of vowels or consonants for a given candidate
+ *
+ * @candidate : string to be checked
+ * @consonant : if true => count consonants ; else => count vowels
+ *
+ * @return number of vowels/consonants in candidate
+ */
+int strlenVo(char* candidate, bool consonant);
+/**
+ * Checks if program should continue sorting
+ *
+ * @return true if sort should continue ; false otherwise
+ */
+bool sortCond();
+/**
+ * transforms sem_getValue() to have value returned
+ *
+ * @sem : semaphore to check
+ *
+ * @return value of semaphore
+ */
+int getSemValue(sem_t * sem);
+/**
+ * Reads the next hash from the binary file and returns it
+ * Closes file if no more hashes left
+ *
+ * @file : pointer to input file
+ * @hash : pointer to hash
+ *
+ * @return pointer to hash
+ */
+uint8_t* readBinFile(FILE* file, uint8_t * hash);
 
 /*---------------------------------------------------------------------------*/
 /*     Error handling functions                                              */
 /*---------------------------------------------------------------------------*/
 
-  /**
-   * Print error and EXIT_FAILURE
-   *
-   * @err : error depending on the function that caused the error
-   * @msg : explanation of the error
-   */
-  void intError (int err, char *msg);
-  /**
-   * Print error and EXIT_FAILURE
-   *
-   * @msg : explanation of the error
-   */
-  void stringError (char *msg);
+/**
+ * Print error and EXIT_FAILURE
+ *
+ * @err : error depending on the function that caused the error
+ * @msg : explanation of the error
+ */
+void intError (int err, char *msg);
+/**
+ * Print error and EXIT_FAILURE
+ *
+ * @msg : explanation of the error
+ */
+void stringError (char *msg);
 
-//variables
-  // define a la place de sizeofHash et sizeofString
-  int sizeofHash = 32;
-  int sizeofString = 17; // 16 + '\0'
-  FILE* file;
-  FILE* outFile;
-  bool OutputToFile = false;
-  int N = 1;
-  //prodCons1
-  uint8_t * ProdCons;
-  pthread_mutex_t mutex;
-  sem_t empty; //tested function in test_Semaphore.c
-  sem_t full;
-  int finishProd=0; // counter for number of files read
-  //ProdCons2
-  char * ProdCons2;
-  pthread_mutex_t mutex2;
-  sem_t empty2;
-  sem_t full2;
-  bool consonne = false;
-  //CondSort
-  pthread_mutex_t mutex3;
-  int consFinish = 0;
+/*---------------------------------------------------------------------------*/
+/*     Variables                                                             */
+/*---------------------------------------------------------------------------*/
 
-  struct node * head;
-  int numberoffiles;
-  int err;
+/* file for input files ; outFile for output files */
+FILE* file;
+FILE* outFile;
+bool OutputToFile = false;
+/* Number of threads */
+int N = 1;
+/* First buffer (before reverseHash) and related mutex and semaphores */
+uint8_t * ProdCons;
+pthread_mutex_t mutex;
+sem_t empty;
+sem_t full;
+int finishProd=0; // counter for number of files read
+/* Second buffer and related mutex and semaphores */
+char * ProdCons2;
+pthread_mutex_t mutex2;
+sem_t empty2;
+sem_t full2;
+bool consonne = false;
+//CondSort
+pthread_mutex_t mutex3;
+int consFinish = 0;
+
+struct node * head;
+int numberOfFiles;
+int err;
 
 
 int main(int argc, char *argv[]){
@@ -243,11 +245,11 @@ int main(int argc, char *argv[]){
 
   // Initialisation
 
-    ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*sizeofHash);//create the table
+    ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*SIZE_OF_HASH);//create the table
     if(ProdCons==NULL){
       stringError("calloc ProdCons fail");
     }
-    ProdCons2 = (char *) calloc(N, sizeof(char)*sizeofString);
+    ProdCons2 = (char *) calloc(N, sizeof(char)*SIZE_OF_STRING);
     if(ProdCons==NULL){
       stringError("calloc ProdCons2 fail");
     }
@@ -286,16 +288,16 @@ int main(int argc, char *argv[]){
   printf("sizeof argv %d", (int)sizeof(strlen(argv[3])) );
   struct arg* ARG = (struct arg*) malloc(sizeof(int)*2+sizeof(char**)) ;
   if(ARG==NULL){stringError("malloc ARG error");}
-  numberoffiles=argc - optind;
+  numberOfFiles=argc - optind;
 
   printf("*argv[optind]=%s\n", argv[optind]);
 
-  printf("numberoffiles = %d\n", numberoffiles );
-  ARG->argv=malloc(sizeof(char*) * numberoffiles);
+  printf("numberOfFiles = %d\n", numberOfFiles );
+  ARG->argv=malloc(sizeof(char*) * numberOfFiles);
   if(ARG->argv==NULL){stringError("malloc ARG->argv error");}
 
   //pour le bon nombre de fichier
-  for(int i=0; i<numberoffiles; i++){
+  for(int i=0; i<numberOfFiles; i++){
     ARG->argv[i]=malloc(strlen(argv[optind+i]));
     if(ARG->argv[i]==NULL){stringError("malloc ARG->argv[i] error\n");}
     ARG->argv[i]=argv[optind+i];
@@ -369,7 +371,7 @@ int main(int argc, char *argv[]){
 
 //readFile
 uint8_t* readBinFile(FILE* file, uint8_t * hash){
-  if(fread(hash, sizeof(uint8_t), sizeofHash, file)==sizeofHash){
+  if(fread(hash, sizeof(uint8_t), SIZE_OF_HASH, file)==SIZE_OF_HASH){
     return hash;
   }
   else{
@@ -388,17 +390,17 @@ void * producer(void * arg){
 
   //get fileName for input files
   char **ARGV=((struct arg*) arg)->argv;
-  for(int i=0; i<numberoffiles; i++){
+  for(int i=0; i<numberOfFiles; i++){
     printf("Prod; ARGV[%d] = %s\n", i, ARGV[i]);
   }
 
-  for(int i =0; i<numberoffiles;i++){
+  for(int i =0; i<numberOfFiles;i++){
     //file opens
     file = fopen(ARGV[i], "rb");
     if(!file){stringError("input file didn't open correctly");}
     printf("file is open[%d], %s\n",i, ARGV[i] );
 
-    uint8_t * hash = malloc(sizeof(char)*sizeofHash);
+    uint8_t * hash = malloc(sizeof(char)*SIZE_OF_HASH);
     if(!hash){stringError("malloc ARG error");}
     bool test=true;
     while(test){
@@ -425,9 +427,9 @@ void * producer(void * arg){
 
 // Consomer, most of prossesor time
 void * consumer(){
-  uint8_t * hash = malloc(sizeof(char)*sizeofHash);
+  uint8_t * hash = malloc(sizeof(char)*SIZE_OF_HASH);
   if(hash==NULL){stringError("malloc hash error");}
-  char * resRH = malloc(sizeof(char)*sizeofString);
+  char * resRH = malloc(sizeof(char)*SIZE_OF_STRING);
   if(resRH==NULL){stringError("malloc resRH error");}
 
   pthread_mutex_lock(&mutex3);
@@ -442,7 +444,7 @@ void * consumer(){
     pthread_mutex_unlock(&mutex);
     sem_post(&empty); // a slot has been cleaned
 
-    err = reversehash(hash, resRH, sizeof(char)*sizeofString)
+    err = reversehash(hash, resRH, sizeof(char)*SIZE_OF_STRING)
     if(err!=0)){stringError("reverseHash error");} //need to refer to reverse.c
 
     sem_wait(&empty2); // wait for an empty slot
@@ -464,7 +466,7 @@ void * consumer(){
 }
 
 void * sort(){
-  char * resRH = malloc(sizeof(char)*sizeofString);
+  char * resRH = malloc(sizeof(char)*SIZE_OF_STRING);
   if(!resRH) {stringError("malloc resRH error");}
   while(sortCond())  //check if production of contion ended and if the buffer is empty
   {
@@ -513,8 +515,8 @@ int getSemValue(sem_t * sem){
 // if resRH == true => removeResRH ; else => removeHash
 void removeFromBuffer(char* A, char *PC, int N, bool resRH){
   int counter=0;
-  int sz = sizeofHash;
-  if(resRH){sz = sizeofString;}
+  int sz = SIZE_OF_HASH;
+  if(resRH){sz = SIZE_OF_STRING;}
 
   for(int i=0; (i<N) & !counter; i++){
     counter=0;
@@ -534,8 +536,8 @@ void removeFromBuffer(char* A, char *PC, int N, bool resRH){
 // if resRH == true => insertResRH ; else => insertHash
 void insertInBuffer(char * A, char * PC, int N, bool resRH){
   int counter;
-  int sz = sizeofHash;
-  if(resRH){sz = sizeofString;}
+  int sz = SIZE_OF_HASH;
+  if(resRH){sz = SIZE_OF_STRING;}
 
   for(int i=0; i<N; i++){
     counter=0;
@@ -568,7 +570,7 @@ int push(struct node **head, const char *value){
   return 0;
 }
 
-int pop(struct node **head){
+void pop(struct node ** head){
   while(*head){
     struct node * first = *head;
     first=*head;
@@ -576,16 +578,16 @@ int pop(struct node **head){
     free(first->name);
     free(first);
   }
-  return 0;
+  return;
 }
 
-int printStack(struct node **head){
+void printStack(struct node **head){
   struct node * first = *head;
   while(first != NULL){
     printf("%s\n",(first->name));
     first = (first->next);
   }
-  return 0;
+  return;
 }
 
 int strlenVo(char* candidate, bool consonant){
