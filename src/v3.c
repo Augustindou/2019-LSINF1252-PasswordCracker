@@ -1,3 +1,6 @@
+#define SIZE_OF_HASH 32
+#define SIZE_OF_STRING 17
+
 #include "reverse.h"
 #include "reverse.c"
 #include "sha256.c"
@@ -93,18 +96,14 @@ int push(struct node **head, const char *value);
  * Free all elements of the stack.
  *
  * @head : pointer to the top of the stack
- *
- * @return 0 if no error, -1 otherwise
  */
-int pop(struct node **head);
+void pop(struct node ** head);
 /**
  * Print all elements of the stack.
  *
  * @head : pointer to the top of the stack
- *
- * @return 0 if no error, -1 otherwise
  */
-int printStack(struct node **head);
+void printStack(struct node **head);
 /**
  * Saves stack in outputFile
  *
@@ -171,33 +170,35 @@ void intError (int err, char *msg);
  */
 void stringError (char *msg);
 
-//variables
-  // define a la place de sizeofHash et sizeofString
-  int sizeofHash = 32;
-  int sizeofString = 17; // 16 + '\0'
-  FILE* file;
-  FILE* outFile;
-  bool OutputToFile = false;
-  int N = 1;
-  //prodCons1
-  uint8_t * ProdCons;
-  pthread_mutex_t mutex;
-  sem_t empty; //tested function in test_Semaphore.c
-  sem_t full;
-  int finishProd=0; // counter for number of files read
-  //ProdCons2
-  char * ProdCons2;
-  pthread_mutex_t mutex2;
-  sem_t empty2;
-  sem_t full2;
-  bool consonne = false;
-  //CondSort
-  pthread_mutex_t mutex3;
-  int consFinish = 0;
+/*---------------------------------------------------------------------------*/
+/*     Variables                                                             */
+/*---------------------------------------------------------------------------*/
 
-  struct node * head;
-  int numberoffiles;
-  int err;
+/* file for input files ; outFile for output files */
+FILE* file;
+FILE* outFile;
+bool OutputToFile = false;
+/* Number of threads */
+int N = 1;
+/* First buffer (before reverseHash) and related mutex and semaphores */
+uint8_t * ProdCons;
+pthread_mutex_t mutex;
+sem_t empty;
+sem_t full;
+int finishProd=0; // counter for number of files read
+/* Second buffer and related mutex and semaphores */
+char * ProdCons2;
+pthread_mutex_t mutex2;
+sem_t empty2;
+sem_t full2;
+bool consonne = false;
+//CondSort
+pthread_mutex_t mutex3;
+int consFinish = 0;
+
+struct node * head;
+int numberOfFiles;
+int err;
 
 
 int main(int argc, char *argv[]){
@@ -244,11 +245,11 @@ int main(int argc, char *argv[]){
 
   // Initialisation
 
-    ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*sizeofHash);//create the table
+    ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*SIZE_OF_HASH);//create the table
     if(ProdCons==NULL){
       stringError("calloc ProdCons fail");
     }
-    ProdCons2 = (char *) calloc(N, sizeof(char)*sizeofString);
+    ProdCons2 = (char *) calloc(N, sizeof(char)*SIZE_OF_STRING);
     if(ProdCons==NULL){
       stringError("calloc ProdCons2 fail");
     }
@@ -287,16 +288,16 @@ int main(int argc, char *argv[]){
   printf("sizeof argv %d", (int)sizeof(strlen(argv[3])) );
   struct arg* ARG = (struct arg*) malloc(sizeof(int)*2+sizeof(char**)) ;
   if(ARG==NULL){stringError("malloc ARG error");}
-  numberoffiles=argc - optind;
+  numberOfFiles=argc - optind;
 
   printf("*argv[optind]=%s\n", argv[optind]);
 
-  printf("numberoffiles = %d\n", numberoffiles );
-  ARG->argv=malloc(sizeof(char*) * numberoffiles);
+  printf("numberOfFiles = %d\n", numberOfFiles );
+  ARG->argv=malloc(sizeof(char*) * numberOfFiles);
   if(ARG->argv==NULL){stringError("malloc ARG->argv error");}
 
   //pour le bon nombre de fichier
-  for(int i=0; i<numberoffiles; i++){
+  for(int i=0; i<numberOfFiles; i++){
     ARG->argv[i]=malloc(strlen(argv[optind+i]));
     if(ARG->argv[i]==NULL){stringError("malloc ARG->argv[i] error\n");}
     ARG->argv[i]=argv[optind+i];
@@ -370,7 +371,7 @@ int main(int argc, char *argv[]){
 
 //readFile
 uint8_t* readBinFile(FILE* file, uint8_t * hash){
-  if(fread(hash, sizeof(uint8_t), sizeofHash, file)==sizeofHash){
+  if(fread(hash, sizeof(uint8_t), SIZE_OF_HASH, file)==SIZE_OF_HASH){
     return hash;
   }
   else{
@@ -389,17 +390,17 @@ void * producer(void * arg){
 
   //get fileName for input files
   char **ARGV=((struct arg*) arg)->argv;
-  for(int i=0; i<numberoffiles; i++){
+  for(int i=0; i<numberOfFiles; i++){
     printf("Prod; ARGV[%d] = %s\n", i, ARGV[i]);
   }
 
-  for(int i =0; i<numberoffiles;i++){
+  for(int i =0; i<numberOfFiles;i++){
     //file opens
     file = fopen(ARGV[i], "rb");
     if(!file){stringError("input file didn't open correctly");}
     printf("file is open[%d], %s\n",i, ARGV[i] );
 
-    uint8_t * hash = malloc(sizeof(char)*sizeofHash);
+    uint8_t * hash = malloc(sizeof(char)*SIZE_OF_HASH);
     if(!hash){stringError("malloc ARG error");}
     bool test=true;
     while(test){
@@ -408,7 +409,7 @@ void * producer(void * arg){
         sem_wait(&empty); // attente d'un slot libre
         pthread_mutex_lock(&mutex);
           // section critique 1
-          insertInBuffer((char*)hash, (char*)ProdCons, N, false);  //ajout dans le tableau la chaine de sizeofHash (32) byte
+          insertInBuffer((char*)hash, (char*)ProdCons, N, false);  //ajout dans le tableau la chaine de SIZE_OF_HASH (32) byte
         pthread_mutex_unlock(&mutex);
         sem_post(&full); // il y a un slot rempli en plus
       }
@@ -426,16 +427,16 @@ void * producer(void * arg){
 
 // Consommateur, reverseHash
 void * consumer(){
-  uint8_t * hash = malloc(sizeof(char)*sizeofHash);
+  uint8_t * hash = malloc(sizeof(char)*SIZE_OF_HASH);
   if(hash==NULL){printf("malloc error\n");}
-  char * resRH = malloc(sizeof(char)*sizeofString);
+  char * resRH = malloc(sizeof(char)*SIZE_OF_STRING);
   if(!hash || !resRH){
     free(hash); free(resRH);
     printf("malloc fail\n");
     return NULL;
   }
   pthread_mutex_lock(&mutex3);
-  while(finishProd<numberoffiles || getSemValue(&full) ) //check si la production est terminee et verifie si le tableau est vide
+  while(finishProd<numberOfFiles || getSemValue(&full) ) //check si la production est terminee et verifie si le tableau est vide
   {
     pthread_mutex_unlock(&mutex3);
     sem_wait(&full); // attente d'un slot rempli
@@ -445,7 +446,7 @@ void * consumer(){
     pthread_mutex_unlock(&mutex);
     sem_post(&empty); // il y a un slot libre en plus
 
-    if(!reversehash(hash, resRH, sizeof(char)*sizeofString)){
+    if(!reversehash(hash, resRH, sizeof(char)*SIZE_OF_STRING)){
       printf("petite erreur dans reverseHash!\n");
     }//le mot de passe ne respecte pas les consignes
 
@@ -468,7 +469,7 @@ void * consumer(){
 }
 
 void * sort(){
-  char * resRH = malloc(sizeof(char)*sizeofString);
+  char * resRH = malloc(sizeof(char)*SIZE_OF_STRING);
   if(!resRH) {
     printf("malloc fail\n");
     return NULL;
@@ -520,8 +521,8 @@ int getSemValue(sem_t * sem){
 // if resRH == true => removeResRH ; else => removeHash
 void removeFromBuffer(char* A, char *PC, int N, bool resRH){
   int counter=0;
-  int sz = sizeofHash;
-  if(resRH){sz = sizeofString;}
+  int sz = SIZE_OF_HASH;
+  if(resRH){sz = SIZE_OF_STRING;}
 
   for(int i=0; (i<N) & !counter; i++){
     counter=0;
@@ -541,8 +542,8 @@ void removeFromBuffer(char* A, char *PC, int N, bool resRH){
 // if resRH == true => insertResRH ; else => insertHash
 void insertInBuffer(char * A, char * PC, int N, bool resRH){
   int counter;
-  int sz = sizeofHash;
-  if(resRH){sz = sizeofString;}
+  int sz = SIZE_OF_HASH;
+  if(resRH){sz = SIZE_OF_STRING;}
 
   for(int i=0; i<N; i++){
     counter=0;
@@ -575,7 +576,7 @@ int push(struct node **head, const char *value){
   return 0;
 }
 
-int pop(struct node **head){
+void pop(struct node ** head){
   while(*head){
     struct node * first = *head;
     first=*head;
@@ -583,16 +584,16 @@ int pop(struct node **head){
     free(first->name);
     free(first);
   }
-  return 0;
+  return;
 }
 
-int printStack(struct node **head){
+void printStack(struct node **head){
   struct node * first = *head;
   while(first != NULL){
     printf("%s\n",(first->name));
     first = (first->next);
   }
-  return 0;
+  return;
 }
 
 int strlenVo(char* candidate, bool consonant){
