@@ -299,7 +299,7 @@ void * consumer(){
     sem_post(&empty); // a slot has been cleaned
 
     err = reversehash(hash, resRH, sizeof(char)*SIZE_OF_STRING);
-    if(err!=0){stringError("reverseHash error");} //need to refer to reverse.c
+    if(!err){stringError("reverseHash error");} //need to refer to reverse.c
 
     sem_wait(&empty2); // wait for an empty slot
     pthread_mutex_lock(&mutex3);
