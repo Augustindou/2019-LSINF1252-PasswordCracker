@@ -30,12 +30,16 @@ struct arg {
    * Adds new hashes from binary file to first buffer
    *
    * @arg : ** first bin file
+   *
+   * @return //TODO --------------------------------------------------------------------
    */
   void * producer(void * arg);
   /**
    * Gets hashes from first buffer
    * Bruteforce hash => password
    * Adds passwords to second buffer
+   *
+   * @return //TODO --------------------------------------------------------------------
    */
   void * consumer();
   /**
@@ -44,32 +48,37 @@ struct arg {
    * If better : frees the stack and add new password
    * If equal : adds password to stack
    * If worse : discards new password
+   *
+   * @return //TODO --------------------------------------------------------------------
    */
   void * sort();
 /*---------------------------------------------------------------------------*/
 /*     Buffer-based functions                                                */
 /*---------------------------------------------------------------------------*/
+
   /**
    * Inserts byte array in buffer
    *
    * @A : *value to be inserted
    * @PC : *buffer
    * @N : Size of buffer (== number of threads)
-   * @resRH : if true => A is a password ; if false => A is a hash
+   * @resRH : if true => A is a candidate ; if false => A is a hash
    */
   void insertInBuffer(char * A, char * PC, int N, bool resRH);
   /**
+   * Removes byte array from buffer
    *
-   *
-   * // @ARGS //
-   *
-   * @return 0 if no error, -1 otherwise
+   * @A : *removed value
+   * @PC : *buffer
+   * @N : Size of buffer (== number of threads)
+   * @resRH : if true => A is a candidate ; if false => A is a hash
    */
   void removeFromBuffer(char* A, char *PC, int N, bool resRH);
 
 /*---------------------------------------------------------------------------*/
 /*     Stack-based functions                                                 */
 /*---------------------------------------------------------------------------*/
+
   /**
    * Add @value at the "top" of the stack.
    *
@@ -95,18 +104,70 @@ struct arg {
    * @return 0 if no error, -1 otherwise
    */
   int printStack(struct node **head);
+  /**
+   * Saves stack in outputFile
+   *
+   * @head : top of the stack
+   * @outputFile : *FILE where the passwords should be written
+   *
+   * @return 0 if no error, -1 otherwise
+   */
+  int saveToFile(struct node ** head, FILE * outputFile);
 
 /*---------------------------------------------------------------------------*/
-/*     ?????                                                                 */
+/*     Small functions                                                       */
 /*---------------------------------------------------------------------------*/
-  /* readBinFile reads the next hash from the binary file and returns it */
-  uint8_t* readBinFile(FILE* file, uint8_t * hash);
-  int strlenVo(char* candidat, bool consonant);
-  int saveToFile(struct node ** head, FILE * OutputFile);
+
+  /**
+   * Calculate number of vowels or consonants for a given candidate
+   *
+   * @candidate : string to be checked
+   * @consonant : if true => count consonants ; else => count vowels
+   *
+   * @return number of vowels/consonants in candidate
+   */
+  int strlenVo(char* candidate, bool consonant);
+  /**
+   * Checks if program should continue sorting
+   *
+   * @return true if sort should continue ; false otherwise
+   */
   bool sortCond();
-  /* small function to modify sem_getValue() */
+  /**
+   * transforms sem_getValue() to have value returned
+   *
+   * @sem : semaphore to check
+   *
+   * @return value of semaphore
+   */
   int getSemValue(sem_t * sem);
+  /**
+   * Reads the next hash from the binary file and returns it
+   * Closes file if no more hashes left
+   *
+   * @file : //TODO -------------------------------------------------------------------
+   * @hash : //TODO -------------------------------------------------------------------
+   *
+   * @return 0 if no error, -1 otherwise
+   */
+  uint8_t* readBinFile(FILE* file, uint8_t * hash);
+
+/*---------------------------------------------------------------------------*/
+/*     Error handling functions                                              */
+/*---------------------------------------------------------------------------*/
+
+  /**
+   * Print error and EXIT_FAILURE
+   *
+   * @err : error depending on the function that caused the error
+   * @msg : explanation of the error
+   */
   void intError (int err, char *msg);
+  /**
+   * Print error and EXIT_FAILURE
+   *
+   * @msg : explanation of the error
+   */
   void stringError (char *msg);
 
 //variables
@@ -147,7 +208,7 @@ int main(int argc, char *argv[]){
     printf("argv[%d] = %s, ",i, argv[i]);}
     printf("\n");
 
-    //TODO check if with argument but no input file
+    //TODO check if with argument but no input file -------------------------------------
     if(argc==1){
       stringError("the function needs at least one argument");
     }
@@ -576,29 +637,30 @@ int printStack(struct node **head){
   return 0;
 }
 
-int strlenVo(char* candidat, bool consonant){
+int strlenVo(char* candidate, bool consonant){
   int vowels=0;
-  int len=strlen(candidat);
+  int len=strlen(candidate);
   for(int i=0; i<len; i++){
-        if(candidat[i]=='a' || candidat[i]=='e' || candidat[i]=='i' ||
-           candidat[i]=='o' || candidat[i]=='u' || candidat[i]=='y'){
+        if(candidate[i]=='a' || candidate[i]=='e' || candidate[i]=='i' ||
+           candidate[i]=='o' || candidate[i]=='u' || candidate[i]=='y'){
             vowels++;}
   }
   if(consonant){return len-vowels;}
   return vowels;
 }
 
-int saveToFile(struct node ** head, FILE * OutputFile){
+int saveToFile(struct node ** head, FILE * outputFile){
   struct node * first = *head;
   int wErr = 0;
   while(first){
-    if(fprintf(OutputFile, "%s\n", first->name) < 0){
+    if(fprintf(outputFile, "%s\n", first->name) < 0){
       wErr++;
     }
     first = (first->next);
   }
   if (wErr > 0) {
     printf("Number of writing errors : %d\n", wErr);
+    return wErr;
   }
   else
   {
