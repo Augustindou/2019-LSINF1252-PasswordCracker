@@ -13,8 +13,6 @@
 #include <getopt.h>
 #include <time.h>
 
-
-
 // node structure for password stack
 struct node {
     struct node *next;
@@ -24,28 +22,89 @@ struct arg {
     char **argv;
 };
 
-// functions
+/*---------------------------------------------------------------------------*/
+/*     Thread-based functions                                                */
+/*---------------------------------------------------------------------------*/
+  /**
+   * Adds new hashes from binary file to first buffer
+   *
+   * @arg : ** first bin file
+   */
+  void * producer(void * arg);
+  /**
+   * Gets hashes from first buffer
+   * Bruteforce hash => password
+   * Adds passwords to second buffer
+   */
+  void * consumer();
+  /**
+   * Gets passwords from second buffer
+   * Checks if password is better than last ones
+   * If better : frees the stack and add new password
+   * If equal : adds password to stack
+   * If worse : discards new password
+   */
+  void * sort();
+/*---------------------------------------------------------------------------*/
+/*     Buffer-based functions                                                */
+/*---------------------------------------------------------------------------*/
+  /**
+   * Inserts byte array in buffer
+   *
+   * @A : *value to be inserted
+   * @PC : *buffer
+   * @N : Size of buffer (== number of threads)
+   * @resRH : if true => A is a password ; if false => A is a hash
+   */
+  void insertInBuffer(char * A, char * PC, int N, bool resRH);
+  /**
+   *
+   *
+   * // @ARGS //
+   *
+   * @return 0 if no error, -1 otherwise
+   */
+  void removeFromBuffer(char* A, char *PC, int N, bool resRH);
+
+/*---------------------------------------------------------------------------*/
+/*     Stack-based functions                                                 */
+/*---------------------------------------------------------------------------*/
+  /**
+   * Add @value at the "top" of the stack.
+   *
+   * @head : pointer to the top of the stack
+   * @value : the string to be placed in the element at the top of the stack
+   *
+   * @return 0 if no error, -1 otherwise
+   */
+  int push(struct node **head, const char *value);
+  /**
+   * Free all elements of the stack.
+   *
+   * @head : pointer to the top of the stack
+   *
+   * @return 0 if no error, -1 otherwise
+   */
+  int pop(struct node **head);
+  /**
+   * Print all elements of the stack.
+   *
+   * @head : pointer to the top of the stack
+   *
+   * @return 0 if no error, -1 otherwise
+   */
+  int printStack(struct node **head);
+
+/*---------------------------------------------------------------------------*/
+/*     ?????                                                                 */
+/*---------------------------------------------------------------------------*/
   /* readBinFile reads the next hash from the binary file and returns it */
   uint8_t* readBinFile(FILE* file, uint8_t * hash);
-  /* function reading hashes from binary files */
-  void * producer(void * arg);
-  /* function reversing hashes to obtain passwords */
-  void * consumer();
-  /* function sorting passwords */
-  void * sort();
-  /* small function to modify sem_getValue() */
-  int getSemValue(sem_t * sem);
-  /* insert in table
-   * (if resRH == true : ) */
-  void insert(char * A, char * PC, int N, bool resRH);
-  void removeHash(uint8_t* hash, uint8_t *ProdCons, int N);
-  void removeResRH(char * resRH, char *ProdCons2, int N);
-  int push(struct node **head, const char *value);
-  int pop(struct node **head);
-  int printStack(struct node **head);
   int strlenVo(char* candidat, bool consonant);
   int saveToFile(struct node ** head, FILE * OutputFile);
   bool sortCond();
+  /* small function to modify sem_getValue() */
+  int getSemValue(sem_t * sem);
 
 //variables
   // define a la place de sizeofHash et sizeofString
@@ -310,7 +369,7 @@ void * producer(void * arg){
         sem_wait(&empty); // attente d'un slot libre
         pthread_mutex_lock(&mutex);
           // section critique 1
-          insert((char*)hash, (char*)ProdCons, N, false);  //ajout dans le tableau la chaine de sizeofHash (32) byte
+          insertInBuffer((char*)hash, (char*)ProdCons, N, false);  //ajout dans le tableau la chaine de sizeofHash (32) byte
         pthread_mutex_unlock(&mutex);
         sem_post(&full); // il y a un slot rempli en plus
       }
@@ -343,7 +402,7 @@ void * consumer(){
     sem_wait(&full); // attente d'un slot rempli
     pthread_mutex_lock(&mutex);
       // section critique 1
-      removeHash(hash, ProdCons, N);
+      removeFromBuffer((char*) hash, (char*) ProdCons, N, false);
     pthread_mutex_unlock(&mutex);
     sem_post(&empty); // il y a un slot libre en plus
 
@@ -355,7 +414,7 @@ void * consumer(){
     pthread_mutex_lock(&mutex3);
     pthread_mutex_lock(&mutex2);
       // section critique 2
-      insert(resRH, ProdCons2, N, true);
+      insertInBuffer(resRH, ProdCons2, N, true);
     pthread_mutex_unlock(&mutex2);
     sem_post(&full2); // il y a un slot rempli en plus
 
@@ -383,7 +442,7 @@ void * sort(){
     sem_wait(&full2); // attente d'un slot rempli
     pthread_mutex_lock(&mutex2);
       // section critique 2
-      removeResRH(resRH, ProdCons2, N);
+      removeFromBuffer(resRH, ProdCons2, N, true);
       printf("mot: %s\n", resRH);
     pthread_mutex_unlock(&mutex2);
     sem_post(&empty2); // il y a un slot libre en plus
@@ -419,17 +478,21 @@ int getSemValue(sem_t * sem){
   return value;
 } // it works :D
 
-void removeHash(uint8_t* hash, uint8_t *ProdCons, int N){
+// if resRH == true => removeResRH ; else => removeHash
+void removeFromBuffer(char* A, char *PC, int N, bool resRH){
   int counter=0;
+  int sz = sizeofHash;
+  if(resRH){sz = sizeofString;}
+
   for(int i=0; (i<N) & !counter; i++){
     counter=0;
-    for(int j=0; j<sizeofHash; j++){
-      counter = counter + *(ProdCons+i*sizeofHash+j);
+    for(int j=0; j<sz; j++){
+      counter = counter + *(PC+i*sz+j);
     }
     if (counter){
-      for(int j=0; j<sizeofHash; j++){
-        *(hash+j)=*(ProdCons+i*sizeofHash+j);
-          *(ProdCons+i*sizeofHash+j)=0;
+      for(int j=0; j<sz; j++){
+        *(A+j)=*(PC+i*sz+j);
+        *(PC+i*sz+j)=0;
       }
     }
   }
@@ -437,7 +500,7 @@ void removeHash(uint8_t* hash, uint8_t *ProdCons, int N){
 }
 
 // if resRH == true => insertResRH ; else => insertHash
-void insert(char * A, char * PC, int N, bool resRH){
+void insertInBuffer(char * A, char * PC, int N, bool resRH){
   int counter;
   int sz = sizeofHash;
   if(resRH){sz = sizeofString;}
@@ -457,33 +520,6 @@ void insert(char * A, char * PC, int N, bool resRH){
   return;
 }
 
-void removeResRH(char * resRH, char *ProdCons2, int N){
-  int counter=0;
-  int nbLettre=sizeofString;
-  for(int i=0; (i<N) & !counter; i++){
-    counter=0;
-    for(int j=0; j<nbLettre; j++){
-      counter = counter + *(ProdCons2+i*nbLettre+j);
-    }
-    if (counter){
-      for(int j=0; j<nbLettre; j++){
-        *(resRH+j)=*(ProdCons2+i*nbLettre+j);
-          *(ProdCons2+i*nbLettre+j)=0;
-      }
-    }
-  }
-  return;
-}
-
-/**
-* Add @name at the "top" of the stack.
-*
-* @head : pointer to the top of the stack
-* @name : the string to be placed in the element at the top of the stack
-*
-* @return 0 if no error, -1 otherwise
-*/
-
 int push(struct node **head, const char *value){
   if(value==NULL){return -1;}
   char * varC = (char*)malloc(strlen(value)+1);
@@ -500,16 +536,6 @@ int push(struct node **head, const char *value){
   return 0;
 }
 
-/**
-* Free all elements of the stack.
-*
-* @head : pointer to the top of the stack
-*
-* @return 0 if no error, -1 otherwise // enft y a pas moy de detecter des erreurs pck free() est une fct void... donc en soi autant mettre une void pop(struct node** head);
-*
-* pre :
-* post :
-*/
 int pop(struct node **head){
   while(*head){
     struct node * first = *head;

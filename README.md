@@ -6,7 +6,6 @@
 ## TODO
 
 - Commenter
-- Plusieurs fichiers IN
 - Tests
 - Rapport
 - Check return values ?
@@ -14,4 +13,5 @@
 ## DONE
 
 - Répétition du dernier MDP
+- Plusieurs fichiers IN
 - fusionner insertHash et insertResRH
