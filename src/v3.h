@@ -162,38 +162,3 @@ void intError (int err, char *msg);
  * @msg : explanation of the error
  */
 void stringError (char *msg);
-
-/*---------------------------------------------------------------------------*/
-/*     Variables                                                             */
-/*---------------------------------------------------------------------------*/
-
-/* file for input files ; outFile for output file */
-FILE* file;
-FILE* outFile;
-bool OutputToFile = false;
-/* Number of threads */
-int N = 1;
-/* First buffer (before reverseHash) and related mutex and semaphores */
-uint8_t * ProdCons;
-pthread_mutex_t mutex;
-sem_t empty;
-sem_t full;
-/* Second buffer (after reverseHash) and related mutex and semaphores */
-char * ProdCons2;
-pthread_mutex_t mutex2;
-sem_t empty2;
-sem_t full2;
-/* counter for number of files read */
-int finishProd=0;
-/* consonne == true if case of consonants */
-bool consonne = false;
-/* Mutex to handle sort condition */
-pthread_mutex_t mutex3;
-/* Number of threads that finished reverseHash */
-int consFinish = 0;
-/* Head of the password stack */
-struct node * head;
-/* Number of input files */
-int numberOfFiles;
-/* Error handling variable */
-int err;
