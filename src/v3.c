@@ -225,12 +225,12 @@ void * producer(void * arg){
     while(test){
       hash=readBinFile(file, hash); //readf()
       if(hash!=NULL){
-        sem_wait(&empty); // attente d'un slot libre
+        sem_wait(&empty); // wait for an empty slot
         pthread_mutex_lock(&mutex);
-          // section critique 1
-          insertInBuffer((char*)hash, (char*)ProdCons, N, false);  //ajout dans le tableau la chaine de SIZE_OF_HASH (32) byte
+          // critical zone 1
+          insertInBuffer((char*)hash, (char*)ProdCons, N, false);
         pthread_mutex_unlock(&mutex);
-        sem_post(&full); // il y a un slot rempli en plus
+        sem_post(&full); // a slot has been filled
       }
       else{
         test=false;
@@ -244,44 +244,41 @@ void * producer(void * arg){
   return NULL;
 }
 
-// Consommateur, reverseHash
+// Consomer, most of prossesor time
 void * consumer(){
   uint8_t * hash = malloc(sizeof(char)*SIZE_OF_HASH);
-  if(hash==NULL){printf("malloc error\n");}
+  if(hash==NULL){stringError("malloc hash error");}
   char * resRH = malloc(sizeof(char)*SIZE_OF_STRING);
-  if(!hash || !resRH){
-    free(hash); free(resRH);
-    printf("malloc fail\n");
-    return NULL;
-  }
+  if(resRH==NULL){stringError("malloc resRH error");}
+
   pthread_mutex_lock(&mutex3);
-  while(finishProd<numberOfFiles || getSemValue(&full) ) //check si la production est terminee et verifie si le tableau est vide
+  //check if production is finished and if the buffer is empty
+  while(finishProd<numberoffiles || getSemValue(&full) )
   {
     pthread_mutex_unlock(&mutex3);
-    sem_wait(&full); // attente d'un slot rempli
+    sem_wait(&full); //wait for a filled slot
     pthread_mutex_lock(&mutex);
-      // section critique 1
+      // critical zone 1
       removeFromBuffer((char*) hash, (char*) ProdCons, N, false);
     pthread_mutex_unlock(&mutex);
-    sem_post(&empty); // il y a un slot libre en plus
+    sem_post(&empty); // a slot has been cleaned
 
-    if(!reversehash(hash, resRH, sizeof(char)*SIZE_OF_STRING)){
-      printf("petite erreur dans reverseHash!\n");
-    }//le mot de passe ne respecte pas les consignes
+    err = reversehash(hash, resRH, sizeof(char)*SIZE_OF_STRING)
+    if(err!=0)){stringError("reverseHash error");} //need to refer to reverse.c
 
-    sem_wait(&empty2); // attente d'un slot libre
+    sem_wait(&empty2); // wait for an empty slot
     pthread_mutex_lock(&mutex3);
     pthread_mutex_lock(&mutex2);
-      // section critique 2
+      // critical zone 2
       insertInBuffer(resRH, ProdCons2, N, true);
     pthread_mutex_unlock(&mutex2);
-    sem_post(&full2); // il y a un slot rempli en plus
-
+    sem_post(&full2); // a slot has been filled
   }
+
   consFinish++;
   pthread_mutex_unlock(&mutex3);
   //printf("End consumer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
-  printf("End consumer, full2: %d, empty2: %d\n", getSemValue(&full2),getSemValue(&empty2));
+  //printf("End consumer, full2: %d, empty2: %d\n", getSemValue(&full2),getSemValue(&empty2));
 
   free(hash);
   return NULL;
@@ -289,44 +286,37 @@ void * consumer(){
 
 void * sort(){
   char * resRH = malloc(sizeof(char)*SIZE_OF_STRING);
-  if(!resRH) {
-    printf("malloc fail\n");
-    return NULL;
-  }
-  while(sortCond())  //check si la production est terminee et verifie si le tableau est vide
+  if(!resRH) {stringError("malloc resRH error");}
+  while(sortCond())  //check if production of contion ended and if the buffer is empty
   {
-    printf("sortWhile\n");
-    // printf("sort, full2:%d\n", getSemValue(&full2));
-    //if(!getSemValue(&full2)){printf("sort, full2: %d\n", getSemValue(&full2));}
-    sem_wait(&full2); // attente d'un slot rempli
+    //printf("sortWhile\n");
+    //printf("sort, full2:%d\n", getSemValue(&full2));
+    sem_wait(&full2); // wait for a filled slot
     pthread_mutex_lock(&mutex2);
-      // section critique 2
+      // critical zone 2
       removeFromBuffer(resRH, ProdCons2, N, true);
       printf("mot: %s\n", resRH);
     pthread_mutex_unlock(&mutex2);
-    sem_post(&empty2); // il y a un slot libre en plus
+    sem_post(&empty2); // a slot has been cleaned
+
     if(head==NULL){
-      push(&head, resRH);
-    }
-    // bool consonne=false;//a definir dans la premiere partie du code
-    if(head==NULL){
-      printf("add first %s\n", resRH);
-      push(&head, resRH);
+      push(&head, resRH); //TODO malloc, arg
     }
     else if(strlenVo(head->name, consonne)<strlenVo(resRH, consonne)){
-      printf("stack erased:\n");
+      //printf("erased from stack:\n");
       printStack(&head);
-      printf("\n");
+      //printf("\n");
       pop(&head);
       push(&head, resRH);
     }
     else if(strlenVo(head->name, consonne)==strlenVo(resRH, consonne)){
       push(&head, resRH);
     }
-    //else est plus petit
+    // else smaller not need to be saved
   }
 
-  printf("End sort\n");
+  //TODO free
+  //printf("End sort\n");
   return NULL;
 }
 
@@ -427,23 +417,13 @@ int strlenVo(char* candidate, bool consonant){
   return vowels;
 }
 
+//TODO from int to void
 int saveToFile(struct node ** head, FILE * outputFile){
   struct node * first = *head;
-  int wErr = 0;
   while(first){
-    if(fprintf(outputFile, "%s\n", first->name) < 0){
-      wErr++;
-    }
+    err=fprintf(outputFile, "%s\n", first->name)
+    if(err<0){intError(err, "writing error");}
     first = (first->next);
-  }
-  if (wErr > 0) {
-    printf("Number of writing errors : %d\n", wErr);
-    return wErr;
-  }
-  else
-  {
-    printf("No writing errors !\n");
-  }
   return 0;
 }
 
