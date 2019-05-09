@@ -481,27 +481,23 @@ void * sort(){
     sem_post(&empty2); // a slot has been cleaned
 
     if(head==NULL){
-      push(&head, resRH); //malloc, arg
-    }
-
-    if(head==NULL){
-      //printf("add first %s\n", resRH);
-      push(&head, resRH);
+      push(&head, resRH); //TODO malloc, arg
     }
     else if(strlenVo(head->name, consonne)<strlenVo(resRH, consonne)){
-      printf("stack erased:\n");
+      //printf("erased from stack:\n");
       printStack(&head);
-      printf("\n");
+      //printf("\n");
       pop(&head);
       push(&head, resRH);
     }
     else if(strlenVo(head->name, consonne)==strlenVo(resRH, consonne)){
       push(&head, resRH);
     }
-    //else est plus petit
+    // else smaller not need to be saved
   }
 
-  printf("End sort\n");
+  //TODO free
+  //printf("End sort\n");
   return NULL;
 }
 
@@ -602,23 +598,13 @@ int strlenVo(char* candidate, bool consonant){
   return vowels;
 }
 
+//TODO from int to void
 int saveToFile(struct node ** head, FILE * outputFile){
   struct node * first = *head;
-  int wErr = 0;
   while(first){
-    if(fprintf(outputFile, "%s\n", first->name) < 0){
-      wErr++;
-    }
+    err=fprintf(outputFile, "%s\n", first->name)
+    if(err<0){intError(err, "writing error");}
     first = (first->next);
-  }
-  if (wErr > 0) {
-    printf("Number of writing errors : %d\n", wErr);
-    return wErr;
-  }
-  else
-  {
-    printf("No writing errors !\n");
-  }
   return 0;
 }
 
