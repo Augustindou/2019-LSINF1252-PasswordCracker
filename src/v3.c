@@ -15,7 +15,7 @@
 
 
 
-// structure
+// node structure for password stack
 struct node {
     struct node *next;
     char *name;
@@ -25,11 +25,18 @@ struct arg {
 };
 
 // functions
+  /* readBinFile reads the next hash from the binary file and returns it */
   uint8_t* readBinFile(FILE* file, uint8_t * hash);
+  /* function reading hashes from binary files */
   void * producer(void * arg);
+  /* function reversing hashes to obtain passwords */
   void * consumer();
+  /* function sorting passwords */
   void * sort();
+  /* small function to modify sem_getValue() */
   int getSemValue(sem_t * sem);
+  /* insert in table
+   * (if resRH == true : ) */
   void insert(char * A, char * PC, int N, bool resRH);
   void removeHash(uint8_t* hash, uint8_t *ProdCons, int N);
   void removeResRH(char * resRH, char *ProdCons2, int N);
@@ -252,8 +259,9 @@ uint8_t* readBinFile(FILE* file, uint8_t * hash){
   if(fread(hash, sizeof(uint8_t), sizeofHash, file)==sizeofHash){
     //print in hex
     printf("0x ");
-    for(int i = 0; i < 32; i++)
-    {printf("%x", hash[i]); }
+    for(int i = 0; i < 32; i++){
+      printf("%x", hash[i]);
+    }
     printf("\n");
     return hash;
   }//read file
@@ -266,7 +274,7 @@ uint8_t* readBinFile(FILE* file, uint8_t * hash){
     }
     finishProd++;
     return NULL;
-    //attention double le dernier hash trouver une methode pour eviter ca!!
+    //attention double le dernier hash trouver une methode pour eviter ca!! //? comment to delete ?
   } //end of the file
 
   return hash;

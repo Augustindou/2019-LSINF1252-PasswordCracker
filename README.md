@@ -6,8 +6,12 @@
 ## TODO
 
 - Commenter
-- fusionner insertHash et insertResRH
 - Plusieurs fichiers IN
-- Répétition du dernier MDP
 - Tests
 - Rapport
+- Check return values ?
+
+## DONE
+
+- Répétition du dernier MDP
+- fusionner insertHash et insertResRH
