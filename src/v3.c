@@ -253,7 +253,7 @@ void * consumer(){
 
   pthread_mutex_lock(&mutex3);
   //check if production is finished and if the buffer is empty
-  while(finishProd<numberoffiles || getSemValue(&full) )
+  while(finishProd<numberOfFiles || getSemValue(&full) )
   {
     pthread_mutex_unlock(&mutex3);
     sem_wait(&full); //wait for a filled slot
@@ -263,8 +263,8 @@ void * consumer(){
     pthread_mutex_unlock(&mutex);
     sem_post(&empty); // a slot has been cleaned
 
-    err = reversehash(hash, resRH, sizeof(char)*SIZE_OF_STRING)
-    if(err!=0)){stringError("reverseHash error");} //need to refer to reverse.c
+    err = reversehash(hash, resRH, sizeof(char)*SIZE_OF_STRING);
+    if(err!=0){stringError("reverseHash error");} //need to refer to reverse.c
 
     sem_wait(&empty2); // wait for an empty slot
     pthread_mutex_lock(&mutex3);
@@ -421,9 +421,10 @@ int strlenVo(char* candidate, bool consonant){
 int saveToFile(struct node ** head, FILE * outputFile){
   struct node * first = *head;
   while(first){
-    err=fprintf(outputFile, "%s\n", first->name)
+    err=fprintf(outputFile, "%s\n", first->name);
     if(err<0){intError(err, "writing error");}
     first = (first->next);
+  }
   return 0;
 }
 
