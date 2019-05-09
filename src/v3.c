@@ -260,12 +260,16 @@ void * producer(void * arg){
     while(test){
       hash=readBinFile(file, hash); //readf()
       if(hash!=NULL){
-        sem_wait(&empty); // wait for an empty slot
-        pthread_mutex_lock(&mutex);
+        err = sem_wait(&empty); // wait for an empty slot
+        if(err!=0){intError(err, "sem_wait empty error");}
+        err = pthread_mutex_lock(&mutex);
+        if(err!=0){intError(err, "pthread_mutex_lock mutex error");}
           // critical zone 1
           insertInBuffer((char*)hash, (char*)ProdCons, N, false);
-        pthread_mutex_unlock(&mutex);
-        sem_post(&full); // a slot has been filled
+        err = pthread_mutex_unlock(&mutex);
+        if(err!=0){intError(err, "pthread_mutex_unlock mutex error");}
+        err = sem_post(&full); // a slot has been filled
+        if(err!=0){intError(err, "sem_post full error");}
       }
       else{
         test=false;
@@ -286,32 +290,45 @@ void * consumer(){
   char * resRH = malloc(sizeof(char)*SIZE_OF_STRING);
   if(resRH==NULL){stringError("malloc resRH error");}
 
-  pthread_mutex_lock(&mutex3);
+  err = pthread_mutex_lock(&mutex3);
+  if(err!=0){intError(err, "pthread_mutex_lock mutex3 error");}
   //check if production is finished and if the buffer is empty
+  //TODO check error of getSemValue
   while(finishProd<numberOfFiles || getSemValue(&full) )
   {
-    pthread_mutex_unlock(&mutex3);
-    sem_wait(&full); //wait for a filled slot
-    pthread_mutex_lock(&mutex);
+    err = pthread_mutex_unlock(&mutex3);
+    if(err!=0){intError(err, "pthread_mutex_unlock mutex3 error");}
+    err = sem_wait(&full); //wait for a filled slot
+    if(err!=0){intError(err, "sem_wait full error");}
+    err = pthread_mutex_lock(&mutex);
+    if(err!=0){intError(err, "pthread_mutex_lock mutex error");}
       // critical zone 1
       removeFromBuffer((char*) hash, (char*) ProdCons, N, false);
-    pthread_mutex_unlock(&mutex);
-    sem_post(&empty); // a slot has been cleaned
+    err = pthread_mutex_unlock(&mutex);
+    if(err!=0){intError(err, "pthread_mutex_unlock mutex error");}
+    err = sem_post(&empty); // a slot has been cleaned
+    if(err!=0){intError(err, "sem_post empty error");}
 
     err = reversehash(hash, resRH, sizeof(char)*SIZE_OF_STRING);
-    if(err!=0){stringError("reverseHash error");} //need to refer to reverse.c
+    if(!err){stringError("reverseHash error");} //need to refer to reverse.c
 
-    sem_wait(&empty2); // wait for an empty slot
-    pthread_mutex_lock(&mutex3);
-    pthread_mutex_lock(&mutex2);
+    err = sem_wait(&empty2); // wait for an empty slot
+    if(err!=0){intError(err, "sem_wait empty2 error");}
+    err = pthread_mutex_lock(&mutex3);
+    if(err!=0){intError(err, "pthread_mutex_lock mutex3 error");}
+    err = pthread_mutex_lock(&mutex2);
+    if(err!=0){intError(err, "pthread_mutex_lock mutex2 error");}
       // critical zone 2
       insertInBuffer(resRH, ProdCons2, N, true);
-    pthread_mutex_unlock(&mutex2);
-    sem_post(&full2); // a slot has been filled
+    err = pthread_mutex_unlock(&mutex2);
+    if(err!=0){intError(err, "pthread_mutex_unlock mutex2 error");}
+    err = sem_post(&full2); // a slot has been filled
+    if(err!=0){intError(err, "sem_post full2 error");}
   }
 
   consFinish++;
-  pthread_mutex_unlock(&mutex3);
+  err = pthread_mutex_unlock(&mutex3);
+  if(err!=0){intError(err, "pthread_mutex_unlock mutex3 error");}
   //printf("End consumer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
   //printf("End consumer, full2: %d, empty2: %d\n", getSemValue(&full2),getSemValue(&empty2));
 
@@ -326,14 +343,17 @@ void * sort(){
   {
     //printf("sortWhile\n");
     //printf("sort, full2:%d\n", getSemValue(&full2));
-    sem_wait(&full2); // wait for a filled slot
-    pthread_mutex_lock(&mutex2);
+    err = sem_wait(&full2); // wait for a filled slot
+    if(err!=0){intError(err, "sem_wait full2 error");}
+    err = pthread_mutex_lock(&mutex2);
+    if(err!=0){intError(err, "pthread_mutex_lock mutex2 error");}
       // critical zone 2
       removeFromBuffer(resRH, ProdCons2, N, true);
-      printf("mot: %s\n", resRH);
-    pthread_mutex_unlock(&mutex2);
-    sem_post(&empty2); // a slot has been cleaned
-
+      //printf("mot: %s\n", resRH);
+    err = pthread_mutex_unlock(&mutex2);
+    if(err!=0){intError(err, "pthread_mutex_unlock mutex2 error");}
+    err = sem_post(&empty2); // a slot has been cleaned
+    if(err!=0){intError(err, "sem_post empty2 error");}
     if(head==NULL){
       push(&head, resRH); //TODO malloc, arg
     }
@@ -355,14 +375,14 @@ void * sort(){
   return NULL;
 }
 
-//permet d'obtenir la valeur du semaphore passe en argument
 int getSemValue(sem_t * sem){
   int value;
-  sem_getvalue(sem, &value);
+  err = sem_getvalue(sem, &value);
+  if(err!=0){intError(err, "sem_getvalue error");}
   return value;
-} // it works :D
+}
 
-// if resRH == true => removeResRH ; else => removeHash
+
 void removeFromBuffer(char* A, char *PC, int N, bool resRH){
   int counter=0;
   int sz = SIZE_OF_HASH;
@@ -383,7 +403,7 @@ void removeFromBuffer(char* A, char *PC, int N, bool resRH){
   return;
 }
 
-// if resRH == true => insertResRH ; else => insertHash
+
 void insertInBuffer(char * A, char * PC, int N, bool resRH){
   int counter;
   int sz = SIZE_OF_HASH;
@@ -404,15 +424,13 @@ void insertInBuffer(char * A, char * PC, int N, bool resRH){
   return;
 }
 
+//TODO set in void
 int push(struct node **head, const char *value){
-  if(value==NULL){return -1;}
+  if(value==NULL){stringError("try to pop an empty stack");}
   char * varC = (char*)malloc(strlen(value)+1);
-  if(varC==NULL){printf("malloc error\n");}
+  if(varC==NULL){stringError("malloc varC error");}
   struct node* newNode = (struct node*) malloc(sizeof(struct node*)+sizeof(char*)) ;
-  if(!newNode || !varC){
-    free(newNode); free(varC);
-    return -1;
-  }
+  if(newNode==NULL){stringError("malloc newNode error");}
   varC = strcpy(varC, value);
   newNode->next = *head;//work also for *head==NULL
   newNode->name = varC;
@@ -463,7 +481,7 @@ int saveToFile(struct node ** head, FILE * outputFile){
   return 0;
 }
 
-// return true if sort should continue sorting ; false if not
+
 bool sortCond(){
   //printf("I'm checking sortCond\n");
   if(getSemValue(&empty2) != N){
@@ -471,7 +489,8 @@ bool sortCond(){
     return true;
   }
   else if(pthread_mutex_trylock(&mutex3) == 0) {
-    pthread_mutex_unlock(&mutex3);
+    err=pthread_mutex_unlock(&mutex3);
+    if(err!=0){intError(err, "pthread_mutex_unlock mutex3 error");}
     //printf("TL, consFinish = %d\n",consFinish);
     if(consFinish >= N){
       //printf("return false in CondSort\n");
@@ -492,6 +511,7 @@ void intError (int err, char *msg){
   fprintf(stderr, "%s has returned %d, error message : %s\n", msg, err, strerror(errno));
   exit(EXIT_FAILURE);
 }
+
 void stringError (char *msg){
   fprintf(stderr, "%s\n", msg);
   exit(EXIT_FAILURE);
