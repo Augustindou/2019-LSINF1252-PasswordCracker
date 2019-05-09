@@ -12,6 +12,7 @@
 #include <semaphore.h>
 #include <getopt.h>
 #include <time.h>
+#include <errno.h>
 
 // node structure for password stack
 struct node {
@@ -105,6 +106,8 @@ struct arg {
   bool sortCond();
   /* small function to modify sem_getValue() */
   int getSemValue(sem_t * sem);
+  void intError (int err, char *msg);
+  void stringError (char *msg);
 
 //variables
   // define a la place de sizeofHash et sizeofString
@@ -125,7 +128,6 @@ struct arg {
   pthread_mutex_t mutex2;
   sem_t empty2;
   sem_t full2;
-  int finishProd2;
   int finishCons;
   bool consonne = false;
   //CondSort
@@ -134,19 +136,20 @@ struct arg {
 
   struct node * head;
   int numberoffiles;
+  int err;
 
 
 int main(int argc, char *argv[]){
     time_t start =time(0);
-    //definir les les variables avec argv[], comme dans v1.c
+    //definir les les variables avec argv[]
     printf("argc = %d \n", argc);
     for(int i=0; i<argc; i++){
     printf("argv[%d] = %s, ",i, argv[i]);}
     printf("\n");
 
+    //TODO check if with argument but no input file
     if(argc==1){
-      printf("the function needs at least one argument\n");
-      return -1;
+      stringError("the function needs at least one argument");
     }
 
     int opt;
@@ -155,9 +158,8 @@ int main(int argc, char *argv[]){
       {
         case 't':
           N = atoi(optarg);
-          if(!N || N<=0){
-            printf("le nombre de thread est incorrect, veillez reessayer\n");
-            return -1;
+          if(N<=0){
+            stringError("the number of thread is incorrect, please try again");
           }
           break;
         case 'c':
@@ -165,15 +167,14 @@ int main(int argc, char *argv[]){
           break;
         case 'o':
           OutputToFile = true;
-          printf("la sortie du programme se fera dans le fichier %s\n",optarg);
+          printf("the output of the program will be in the file : %s\n",optarg);
           outFile = fopen(optarg, "w");
-          if(!outFile){
-            printf("creating output file fail\n");
-            return -1;
+          if(outFile==NULL){
+            intError(0,"error with opening the output file"); //TODO can be better
           }
           break;
         case '?':
-          printf("erreur argument");
+          stringError("error in the argument");
           break;
       }
     }
@@ -184,40 +185,46 @@ int main(int argc, char *argv[]){
 
     ProdCons = (uint8_t *) calloc(N, sizeof(uint8_t)*sizeofHash);//create the table
     if(ProdCons==NULL){
-      printf("calloc ProdCons fail\n");
-      return -1;
+      stringError("calloc ProdCons fail");
     }
     ProdCons2 = (char *) calloc(N, sizeof(char)*sizeofString);
     if(ProdCons==NULL){
-      printf("calloc ProdCons2 fail\n");
-      return -1;
+      stringError("calloc ProdCons2 fail");
     }
     head=NULL;
     finishCons=0;
 
-    //pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-    pthread_mutex_init(&mutex, NULL);
-    sem_init(&empty, 0 , N);  // buffer vide
-    sem_init(&full, 0 , 0);   // buffer vide
-    finishProd = 0;   // pas encore la fin du fichier
+    //init all mutex and sem
+    err = pthread_mutex_init(&mutex, NULL);
+    if(err!=0){intError(err, "pthread_mutex_init of mutex");}
+    err = sem_init(&empty, 0 , N);  // empty buffer
+    if(err!=0){intError(err, "sem_init of empty");}
+    err = sem_init(&full, 0 , 0);   // empty buffer
+    if(err!=0){intError(err, "sem_init of full");}
+    finishProd = 0;   // counter for number of read files
 
-    pthread_mutex_init(&mutex2, NULL);
-    sem_init(&empty2, 0 , N);  // buffer vide
-    sem_init(&full2, 0 , 0);   // buffer vide
-    finishProd2 = 0;    // pas encore la fin du bruteforce
+    err = pthread_mutex_init(&mutex2, NULL);
+    if(err!=0){intError(err, "pthread_mutex_init of mutex2");}
+    err = sem_init(&empty2, 0 , N);  // empty buffer
+    if(err!=0){intError(err, "sem_init of empty2");}
+    err = sem_init(&full2, 0 , 0);   // empty buffer
+    if(err!=0){intError(err, "sem_init of full2");}
+    //var? // bruteforce is not yet finished
 
-    pthread_mutex_init(&mutex3, NULL);
+    err = pthread_mutex_init(&mutex3, NULL);
+    if(err!=0){intError(err, "pthread_mutex_init of mutex3");}
 
 
-    //pas oublier de fermer le fichier en cas d'erreur
 
-  //le vrai code
+    //TODO pas oublier de fermer le fichier en cas d'erreur
+
+  //START OF CODE
 
   pthread_t prod;
   pthread_t cons [N];//thread pour reverseHash
   pthread_t cons2;
 
-  //creation des threads
+  //creation of threads
   printf("sizeof argv %d", (int)sizeof(strlen(argv[3])) );
   struct arg* ARG = (struct arg*) malloc(sizeof(int)*2+sizeof(char**)) ;
   if(ARG==NULL){printf("malloc error\n");}
@@ -237,56 +244,48 @@ int main(int argc, char *argv[]){
     ARG->argv[i]=argv[optind+i];
     printf("%s\n",argv[optind+i] );
   }
-  if(pthread_create(&prod, NULL, &producer, (void*)ARG)){
-      printf("error while creating production thread\n");
-      return -1;
+  err = pthread_create(&prod, NULL, &producer, (void*)ARG);
+  if(err!=0){
+      intError(err, "pthread_create of producer");
   }
 
   for(int i=0; i<N; i++){
-    if(pthread_create(&(cons[i]), NULL, &consumer, NULL)){
-      printf("error while creating consumer threads\n");
-      return -1;
+    err = pthread_create(&(cons[i]), NULL, &consumer, NULL);
+    if(err!=0){
+      intError(err, "pthread_create of consumer");
     }
-    printf("create a consumer [%d]\n",i );
+    //printf("create a consumer [%d]\n",i );
   }
-  if(pthread_create(&cons2, NULL, &sort, NULL)){
-      printf("error while creating production thread\n");
-      return -1;
+  err = pthread_create(&cons2, NULL, &sort, NULL);
+  if(err!=0){
+      intError(err, "pthread_create of sort");
   }
 
-  //join de threads
-  if(pthread_join(prod,NULL)!=0){
-    printf("error while prod pthread_join\n");
-    return -1;
+  //join of threads
+  err = pthread_join(prod,NULL);
+  if(err!=0){
+    intError(err, "pthread_join of producer");
   }
   for(int i=0; i<N; i++){
-    if(pthread_join(cons[i],NULL)!=0){
-      printf("error while cons[%d] pthread_join\n",i);
-      return -1;
-    }//check errors
-    printf("fin de cons[%d]\n", i);
-    /*
-    printf("cons done before the if, finishProd2: %d and i: %d", finishProd2, i);
-    if(i==0){
-      printf("cons done before, finishProd2: %d", finishProd2);
-      finishProd2=1;
-      printf("cons done, finishProd2: %d", finishProd2);
+    err = pthread_join(cons[i],NULL);
+    if(err!=0){
+      intError(err, "pthread_join of consumer");
     }
-    */
+    //printf("fin de cons[%d]\n", i);
   }
 
-  if(pthread_join(cons2,NULL)!=0){
-    printf("error while cons2 pthread_join\n");
-    return -1;
+  err= pthread_join(cons2,NULL);
+  if(err!=0){
+    intError(err, "pthread_join of sort");
   }
 
-  printStack(&head);
+  printStack(&head); //TODO if in terminal
   if (OutputToFile) {
     saveToFile(&head, outFile);
-    if (fclose(outFile)) {
-      printf("close output file error\n");
-      pop(&head); // on devrait faire le pop avant chaque return de la main enft...
-      return -1;
+    err = fclose(outFile);
+    if(err!=0){
+      pop(&head); // TODO on devrait faire le pop avant chaque return de la main enft...
+      intError(err, "fclose(outFile)");
     }
   }
   pop(&head);
@@ -295,22 +294,43 @@ int main(int argc, char *argv[]){
   double TheTime = difftime(end, start);
   printf("program end in %f second\n",TheTime);
 
-  //terminasion
-    //maybe check if errors
+  //clean up
+
     free(ProdCons);
-    pthread_mutex_destroy(&mutex);
-    sem_destroy(&empty);
-    sem_destroy(&full);
+    err = pthread_mutex_destroy(&mutex);
+    if(err!=0){
+      intError(err, "pthread_mutex_destroy of mutex");
+    }
+    err = sem_destroy(&empty);
+    if(err!=0){
+      intError(err, "sem_destroy of empty");
+    }
+    err = sem_destroy(&full);
+    if(err!=0){
+      intError(err, "sem_destroy of full");
+    }
 
     free(ProdCons2);
-    pthread_mutex_destroy(&mutex2);
-    sem_destroy(&empty2);
-    sem_destroy(&full2);
+    err = pthread_mutex_destroy(&mutex2);
+    if(err!=0){
+      intError(err, "pthread_mutex_destroy of mutex2");
+    }
+    err = sem_destroy(&empty2);
+    if(err!=0){
+      intError(err, "sem_destroy of empty2");
+    }
+    err = sem_destroy(&full2);
+    if(err!=0){
+      intError(err, "sem_destroy of full2");
+    }
 
-    pthread_mutex_destroy(&mutex3);
+    err = pthread_mutex_destroy(&mutex3);
+    if(err!=0){
+      intError(err, "pthread_mutex_destroy of mutex3");
+    }
 
 
-  return 0;
+  return (EXIT_SUCCESS);
 }
 
 //readFile for threads
@@ -437,7 +457,7 @@ void * sort(){
   while(sortCond())  //check si la production est terminee et verifie si le tableau est vide
   {
     printf("sortWhile\n");
-    // printf("sort, finishCons: %d, full2:%d\n", finishProd2, getSemValue(&full2));
+    // printf("sort, full2:%d\n", getSemValue(&full2));
     //if(!getSemValue(&full2)){printf("sort, full2: %d\n", getSemValue(&full2));}
     sem_wait(&full2); // attente d'un slot rempli
     pthread_mutex_lock(&mutex2);
@@ -589,23 +609,34 @@ int saveToFile(struct node ** head, FILE * OutputFile){
 
 // return true if sort should continue sorting ; false if not
 bool sortCond(){
-  printf("I'm checking sortCond\n");
+  //printf("I'm checking sortCond\n");
   if(getSemValue(&empty2) != N){
-    printf("SV\n");
+    //printf("SV\n");
     return true;
   }
   else if(pthread_mutex_trylock(&mutex3) == 0) {
     pthread_mutex_unlock(&mutex3);
-    printf("TL, consFinish = %d\n",consFinish);
-    if(consFinish >= N){//changed
-      printf("return false in CondSort\n");
+    //printf("TL, consFinish = %d\n",consFinish);
+    if(consFinish >= N){
+      //printf("return false in CondSort\n");
       return false;
     }
     return true;
   }
   else
   {
-    //sleep(1);
+    sleep(1); //for better permorfmence
     return sortCond();
   }
+}
+
+
+
+void intError (int err, char *msg){
+  fprintf(stderr, "%s has returned %d, error message : %s\n", msg, err, strerror(errno));
+  exit(EXIT_FAILURE);
+}
+void stringError (char *msg){
+  fprintf(stderr, "%s\n", msg);
+  exit(EXIT_FAILURE);
 }
