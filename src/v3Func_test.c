@@ -55,6 +55,46 @@ void strlenVo_test_3(void) {
   CU_ASSERT_EQUAL( strlenVo("c", false), 0);
   CU_ASSERT_EQUAL( strlenVo("c", true), 1);
 }
+void getSemValue_test_1(void){
+  sem_t sem;
+  sem_init(&sem, 0 , 0);
+  CU_ASSERT_EQUAL(getSemValue(&sem),0);
+  sem_post(&sem);
+  CU_ASSERT_EQUAL(getSemValue(&sem), 1);
+  sem_wait(&sem);
+  CU_ASSERT_EQUAL(getSemValue(&sem),0);
+  sem_destroy(&sem);
+}
+void getSemValue_test_2(void){
+  sem_t sem;
+  sem_init(&sem, 0 , 0);
+  CU_ASSERT_EQUAL(getSemValue(&sem),0);
+  sem_post(&sem);
+  CU_ASSERT_EQUAL(getSemValue(&sem), 1);
+  sem_post(&sem);
+  CU_ASSERT_EQUAL(getSemValue(&sem),2);
+  sem_destroy(&sem);
+}
+void getSemValue_test_3(void){
+  sem_t sem;
+  sem_init(&sem, 0 , 0);
+  CU_ASSERT_EQUAL(getSemValue(&sem),0);
+  sem_post(&sem);
+  sem_wait(&sem);
+  CU_ASSERT_EQUAL(getSemValue(&sem), 0);
+  sem_post(&sem);
+  sem_wait(&sem);
+  CU_ASSERT_EQUAL(getSemValue(&sem),0);
+  sem_destroy(&sem);
+}
+/*
+int getSemValue(sem_t * sem){
+  int value;
+  err = sem_getvalue(sem, &value);
+  if(err!=0){intError(err, "sem_getvalue error");}
+  return value;
+}
+*/
 
 /************* Test Runner Code goes here **************/
 
@@ -66,6 +106,7 @@ int main ( void )
   if ( CUE_SUCCESS != CU_initialize_registry() )
     return CU_get_error();
 
+       //strlenVo
        /* add a suite to the registry */
        pSuite = CU_add_suite( "strlenVo_test_suite", init_suite, clean_suite );
        if ( NULL == pSuite ) {
@@ -83,18 +124,18 @@ int main ( void )
           return CU_get_error();
        }
 
-       //second try
+       //getSemValue
        /* add a suite to the registry */
-       pSuite = CU_add_suite( "strlenVo_test_suite 2", init_suite, clean_suite );
+       pSuite = CU_add_suite( "getSemValue_test_suite", init_suite, clean_suite );
        if ( NULL == pSuite ) {
           CU_cleanup_registry();
           return CU_get_error();
        }
 
        /* add the tests to the suite */
-       if ( (NULL == CU_add_test(pSuite, "strlenVo_test_1", strlenVo_test_1)) ||
-            (NULL == CU_add_test(pSuite, "strlenVo_test_2", strlenVo_test_2)) ||
-            (NULL == CU_add_test(pSuite, "strlenVo_test_3", strlenVo_test_3))
+       if ( (NULL == CU_add_test(pSuite, "getSemValue_test_1", getSemValue_test_1))||
+            (NULL == CU_add_test(pSuite, "getSemValue_test_2", getSemValue_test_2))||
+            (NULL == CU_add_test(pSuite, "getSemValue_test_3", getSemValue_test_3))
           )
        {
           CU_cleanup_registry();

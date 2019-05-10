@@ -172,7 +172,7 @@ void stringError (char *msg);
 FILE* file;
 FILE* outFile;
 
-
+/* First buffer (before reverseHash)related mutex and semaphores */
 pthread_mutex_t mutex;
 sem_t empty;
 sem_t full;
@@ -185,7 +185,6 @@ sem_t full2;
 
 /* Mutex to handle sort condition */
 pthread_mutex_t mutex3;
-
 /* Head of the password stack */
 struct node * head;
 /* Number of input files */

@@ -30,7 +30,7 @@ u_int8_t* readBinFile(FILE* file, u_int8_t * hash){
     finishProd++;
     return NULL;
   } //end of the file
-
+  
   return hash;
 }
 
