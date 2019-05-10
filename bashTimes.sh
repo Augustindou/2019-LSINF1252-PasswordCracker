@@ -13,6 +13,6 @@ do
     ./cracker -t $i -c -o out.txt tests/test-input/01_4c_1k.bin
     end=`date +%s`
     runtime=$((end-start))
-    echo "$i : $runtime" >> results.txt
+    echo "$i threads : time = $runtime" >> results.txt
   done
 done
