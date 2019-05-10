@@ -7,6 +7,7 @@
 #include "v3.h"
 
 #include <stdio.h>  // for printf
+#include <string.h>
 
 /*
 download CUnit with  http://cunit.sourceforge.net/
@@ -64,8 +65,7 @@ void getSemValue_test_1(void){
   sem_wait(&sem);
   CU_ASSERT_EQUAL(getSemValue(&sem),0);
   sem_destroy(&sem);
-}
-void getSemValue_test_2(void){
+}void getSemValue_test_2(void){
   sem_t sem;
   sem_init(&sem, 0 , 0);
   CU_ASSERT_EQUAL(getSemValue(&sem),0);
@@ -87,14 +87,32 @@ void getSemValue_test_3(void){
   CU_ASSERT_EQUAL(getSemValue(&sem),0);
   sem_destroy(&sem);
 }
-/*
-int getSemValue(sem_t * sem){
-  int value;
-  err = sem_getvalue(sem, &value);
-  if(err!=0){intError(err, "sem_getvalue error");}
-  return value;
+void insertInBuffer_test_1(void) {
+  int NumberOfElements = 3;
+  int sizeOfString = 5;
+  char * PC = (char *) malloc (NumberOfElements*  sizeOfString);
+  char * str = malloc(sizeof(char)*sizeOfString);
+  strcpy(str, "tesd");
+  insertInBuffer(str, (char*)PC, NumberOfElements, true);
+  CU_ASSERT_STRING_EQUAL(PC, str);
 }
-*/
+void removeFromBuffer_test_1(void) {
+  int NumberOfElements = 3;
+  int sizeOfString = 5;
+  char * PC = (char *) malloc (NumberOfElements*  sizeOfString);
+  char * str = malloc(sizeof(char)*sizeOfString);
+  char * str2 = malloc(sizeof(char)*sizeOfString);
+  strcpy(str, "tesd");
+  insertInBuffer(str, (char*)PC, NumberOfElements, true);
+  removeFromBuffer(str2, PC, NumberOfElements,true);
+  CU_ASSERT_STRING_EQUAL(str, str2);
+  strcpy(str, "tesa");
+  insertInBuffer(str, (char*)PC, NumberOfElements, true);
+  strcpy(str, "tesb");
+  insertInBuffer(str, (char*)PC, NumberOfElements, true);
+  removeFromBuffer(str2, PC, NumberOfElements,true);
+  CU_ASSERT_STRING_EQUAL("tesa", str2);
+}
 
 /************* Test Runner Code goes here **************/
 
@@ -137,6 +155,37 @@ int main ( void )
             (NULL == CU_add_test(pSuite, "getSemValue_test_2", getSemValue_test_2))||
             (NULL == CU_add_test(pSuite, "getSemValue_test_3", getSemValue_test_3))
           )
+       {
+          CU_cleanup_registry();
+          return CU_get_error();
+       }
+
+       //insertInBuffer
+       /* add a suite to the registry */
+       pSuite = CU_add_suite( "insertInBuffer_test_suite", init_suite, clean_suite );
+       if ( NULL == pSuite ) {
+          CU_cleanup_registry();
+          return CU_get_error();
+       }
+
+       /* add the tests to the suite */
+       if ( (NULL == CU_add_test(pSuite, "insertInBuffer_test_1", insertInBuffer_test_1))
+                 )
+       {
+          CU_cleanup_registry();
+          return CU_get_error();
+       }
+
+       //removeFromBuffer
+       /* add a suite to the registry */
+       pSuite = CU_add_suite( "removeFromBuffer_test_suit", init_suite, clean_suite );
+       if ( NULL == pSuite ) {
+          CU_cleanup_registry();
+          return CU_get_error();
+       }
+
+       /* add the tests to the suite */
+       if ( (NULL == CU_add_test(pSuite, "removeFromBuffer_test_1", removeFromBuffer_test_1))                 )
        {
           CU_cleanup_registry();
           return CU_get_error();
