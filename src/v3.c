@@ -1,13 +1,9 @@
 #include "v3Func.c"
 
-//TODO : COMMENT MAIN ??? ------------------------------------------------------
+//TODO pre post
 int main(int argc, char *argv[]){
-    time_t start =time(0);
-    //print variables of argv[]
-    printf("argc = %d \n", argc);
-    for(int i=0; i<argc; i++){
-    printf("argv[%d] = %s, ",i, argv[i]);}
-    printf("\n");
+    //set a timer
+    //time_t start =time(0);
 
     //TODO check if with argument but no input file -------------------------------------
     if(argc<=1){
@@ -29,7 +25,6 @@ int main(int argc, char *argv[]){
           break;
         case 'o':
           OutputToFile = true;
-          printf("the output of the program will be in the file : %s\n",optarg);
           outFile = fopen(optarg, "w");
           if(outFile==NULL){
             intError(0,"error with opening the output file"); //TODO can be better
@@ -40,8 +35,6 @@ int main(int argc, char *argv[]){
           break;
       }
     }
-    printf("end of getopt ; optind = %d\n", optind);
-
 
   // Initialisation
 
@@ -85,14 +78,9 @@ int main(int argc, char *argv[]){
   pthread_t cons2;
 
   //creation of threads
-  printf("sizeof argv %d", (int)sizeof(strlen(argv[3])) );
   struct arg* ARG = (struct arg*) malloc(sizeof(int)*2+sizeof(char**)) ;
   if(ARG==NULL){stringError("malloc ARG error");}
   numberOfFiles=argc - optind;
-
-  printf("*argv[optind]=%s\n", argv[optind]);
-
-  printf("numberOfFiles = %d\n", numberOfFiles );
   ARG->argv=malloc(sizeof(char*) * numberOfFiles);
   if(ARG->argv==NULL){stringError("malloc ARG->argv error");}
 
@@ -108,7 +96,6 @@ int main(int argc, char *argv[]){
   for(int i=0; i<N; i++){
     err = pthread_create(&(cons[i]), NULL, &consumer, NULL);
     if(err!=0){intError(err, "pthread_create of consumer");}
-    //printf("create a consumer [%d]\n",i );
   }
   err = pthread_create(&cons2, NULL, &sort, NULL);
   if(err!=0){intError(err, "pthread_create of sort");}
@@ -119,7 +106,6 @@ int main(int argc, char *argv[]){
   for(int i=0; i<N; i++){
     err = pthread_join(cons[i],NULL);
     if(err!=0){intError(err, "pthread_join of consumer");}
-    //printf("fin de cons[%d]\n", i);
   }
 
   err= pthread_join(cons2,NULL);
@@ -162,9 +148,9 @@ int main(int argc, char *argv[]){
     if(err!=0){intError(err, "pthread_mutex_destroy of mutex3");}
 
 
-    time_t end =time(0);
-    double TheTime = difftime(end, start);
-    printf("program end in %f second\n",TheTime);
+    //time_t end =time(0);
+    //double TheTime = difftime(end, start);
+    //printf("program end in %f second\n",TheTime);
 
   return (EXIT_SUCCESS);
 }

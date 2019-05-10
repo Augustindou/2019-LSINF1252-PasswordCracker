@@ -81,9 +81,8 @@ void removeFromBuffer(char* A, char *PC, int N, bool resRH);
  * @head : pointer to the top of the stack
  * @value : the string to be placed in the element at the top of the stack
  *
- * @return 0 if no error, -1 otherwise
  */
-int push(struct node **head, const char *value);
+void push(struct node **head, const char *value);
 /**
  * Free all elements of the stack.
  *

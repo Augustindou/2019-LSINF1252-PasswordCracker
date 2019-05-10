@@ -24,7 +24,6 @@ u_int8_t* readBinFile(FILE* file, u_int8_t * hash){
     return hash;
   }
   else{
-    printf("close file\n");
     err=fclose(file);
     if(err!=0){intError(err, "fclose failed");}
     finishProd++;
@@ -39,15 +38,11 @@ void * producer(void * arg){
 
   //get fileName for input files
   char **ARGV=((struct arg*) arg)->argv;
-  for(int i=0; i<numberOfFiles; i++){
-    printf("Prod; ARGV[%d] = %s\n", i, ARGV[i]);
-  }
 
   for(int i =0; i<numberOfFiles;i++){
     //file opens
     file = fopen(ARGV[i], "rb");
     if(!file){stringError("input file didn't open correctly");}
-    printf("file is open[%d], %s\n",i, ARGV[i] );
 
     u_int8_t * hash = malloc(sizeof(char)*SIZE_OF_HASH);
     if(!hash){stringError("malloc ARG error");}
@@ -74,7 +69,6 @@ void * producer(void * arg){
     free(hash);
   }
 
-  printf("end of producer\n");
   return NULL;
 }
 
@@ -88,7 +82,6 @@ void * consumer(){
   err = pthread_mutex_lock(&mutex3);
   if(err!=0){intError(err, "pthread_mutex_lock mutex3 error");}
   //check if production is finished and if the buffer is empty
-  //TODO check error of getSemValue
   while(finishProd<numberOfFiles || getSemValue(&full) )
   {
     err = pthread_mutex_unlock(&mutex3);
@@ -124,8 +117,6 @@ void * consumer(){
   consFinish++;
   err = pthread_mutex_unlock(&mutex3);
   if(err!=0){intError(err, "pthread_mutex_unlock mutex3 error");}
-  //printf("End consumer, full: %d, empty: %d\n", getSemValue(&full),getSemValue(&empty));
-  //printf("End consumer, full2: %d, empty2: %d\n", getSemValue(&full2),getSemValue(&empty2));
 
   free(hash);
   return NULL;
@@ -136,26 +127,20 @@ void * sort(){
   if(!resRH) {stringError("malloc resRH error");}
   while(sortCond())  //check if production of contion ended and if the buffer is empty
   {
-    //printf("sortWhile\n");
-    //printf("sort, full2:%d\n", getSemValue(&full2));
     err = sem_wait(&full2); // wait for a filled slot
     if(err!=0){intError(err, "sem_wait full2 error");}
     err = pthread_mutex_lock(&mutex2);
     if(err!=0){intError(err, "pthread_mutex_lock mutex2 error");}
       // critical zone 2
       removeFromBuffer(resRH, ProdCons2, N, true);
-      //printf("mot: %s\n", resRH);
     err = pthread_mutex_unlock(&mutex2);
     if(err!=0){intError(err, "pthread_mutex_unlock mutex2 error");}
     err = sem_post(&empty2); // a slot has been cleaned
     if(err!=0){intError(err, "sem_post empty2 error");}
     if(head==NULL){
-      push(&head, resRH); //TODO malloc, arg
+      push(&head, resRH);
     }
     else if(strlenVo(head->name, consonne)<strlenVo(resRH, consonne)){
-      //printf("erased from stack:\n");
-      printStack(&head);
-      //printf("\n");
       pop(&head);
       push(&head, resRH);
     }
@@ -165,8 +150,7 @@ void * sort(){
     // else smaller not need to be saved
   }
 
-  //TODO free
-  //printf("End sort\n");
+  free(resRH);
   return NULL;
 }
 
@@ -220,8 +204,8 @@ void insertInBuffer(char * A, char * PC, int N, bool resRH){
   return;
 }
 
-//TODO set in void
-int push(struct node **head, const char *value){
+
+void push(struct node **head, const char *value){
   if(value==NULL){stringError("try to pop an empty stack");}
   char * varC = (char*)malloc(strlen(value)+1);
   if(varC==NULL){stringError("malloc varC error");}
@@ -231,7 +215,7 @@ int push(struct node **head, const char *value){
   newNode->next = *head;//work also for *head==NULL
   newNode->name = varC;
   *head=newNode;
-  return 0;
+  return;
 }
 
 void pop(struct node ** head){
@@ -279,17 +263,13 @@ int saveToFile(struct node ** head, FILE * outputFile){
 
 
 bool sortCond(){
-  printf("I'm checking sortCond\n");
   if(getSemValue(&empty2) != N){
-    printf("SV\n");
     return true;
   }
   else if(pthread_mutex_trylock(&mutex3) == 0) {
     err=pthread_mutex_unlock(&mutex3);
     if(err!=0){intError(err, "pthread_mutex_unlock mutex3 error");}
-    printf("TL, consFinish = %d\n",consFinish);
     if(consFinish >= N){
-      printf("return false in CondSort\n");
       return false;
     }
     return true;
