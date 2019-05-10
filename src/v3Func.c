@@ -30,7 +30,7 @@ u_int8_t* readBinFile(FILE* file, u_int8_t * hash){
     finishProd++;
     return NULL;
   } //end of the file
-  
+
   return hash;
 }
 
@@ -201,9 +201,10 @@ void removeFromBuffer(char* A, char *PC, int N, bool resRH){
 
 void insertInBuffer(char * A, char * PC, int N, bool resRH){
   int counter;
-  int sz = SIZE_OF_HASH;
+  int sz;
   if(resRH){sz = SIZE_OF_STRING;}
-
+  else{sz = SIZE_OF_HASH;}
+  
   for(int i=0; i<N; i++){
     counter=0;
     for(int j=0; j<sz; j++){
