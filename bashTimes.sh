@@ -1,7 +1,7 @@
 #!/bin/bash
 
 touch results.txt
-for i in 1 2 .. 40
+for i in {1..40}
 do
   start=`date +%s`
   ./cracker -t $i -c -o out.txt tests/test-input/01_4c_1k.bin
