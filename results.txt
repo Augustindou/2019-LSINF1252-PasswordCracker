@@ -1,44 +1,76 @@
-1 : 109 [s]
-2 : 56 [s]
-.. : 0 [s]
-40 : 10 [s]
-1 : 109 [s]
-2 : 56 [s]
-3 : 38 [s]
-4 : 28 [s]
-5 : 24 [s]
-6 : 19 [s]
-7 : 18 [s]
-8 : 16 [s]
-9 : 13 [s]
-10 : 12 [s]
-11 : 11 [s]
-12 : 11 [s]
-13 : 9 [s]
-14 : 9 [s]
-15 : 8 [s]
-16 : 8 [s]
-17 : 7 [s]
-18 : 7 [s]
-19 : 6 [s]
-20 : 8 [s]
-21 : 6 [s]
-22 : 11 [s]
-23 : 8 [s]
-24 : 9 [s]
-25 : 8 [s]
-26 : 9 [s]
-27 : 9 [s]
-28 : 12 [s]
-29 : 10 [s]
-30 : 10 [s]
-31 : 10 [s]
-32 : 11 [s]
-33 : 12 [s]
-34 : 11 [s]
-35 : 12 [s]
-36 : 11 [s]
-37 : 11 [s]
-38 : 11 [s]
-39 : 11 [s]
-40 : 11 [s]
+---------------------------------------------------
+Test : 1
+---------------------------------------------------
+1 threads : time = 111
+2 threads : time = 57
+3 threads : time = 38
+4 threads : time = 28
+5 threads : time = 24
+6 threads : time = 19
+7 threads : time = 18
+8 threads : time = 15
+9 threads : time = 13
+10 threads : time = 12
+11 threads : time = 11
+12 threads : time = 10
+13 threads : time = 9
+14 threads : time = 9
+15 threads : time = 8
+16 threads : time = 9
+17 threads : time = 7
+18 threads : time = 8
+19 threads : time = 7
+20 threads : time = 7
+21 threads : time = 7
+22 threads : time = 11
+23 threads : time = 8
+24 threads : time = 11
+25 threads : time = 11
+26 threads : time = 10
+27 threads : time = 11
+28 threads : time = 11
+29 threads : time = 10
+30 threads : time = 10
+31 threads : time = 10
+32 threads : time = 10
+33 threads : time = 10
+34 threads : time = 12
+35 threads : time = 11
+36 threads : time = 12
+37 threads : time = 11
+38 threads : time = 12
+39 threads : time = 11
+40 threads : time = 11
+---------------------------------------------------
+Test : 2
+---------------------------------------------------
+1 threads : time = 109
+2 threads : time = 56
+3 threads : time = 38
+4 threads : time = 29
+5 threads : time = 24
+6 threads : time = 20
+7 threads : time = 17
+8 threads : time = 15
+9 threads : time = 13
+10 threads : time = 12
+11 threads : time = 11
+12 threads : time = 10
+13 threads : time = 9
+14 threads : time = 9
+15 threads : time = 8
+16 threads : time = 8
+17 threads : time = 7
+18 threads : time = 7
+19 threads : time = 6
+20 threads : time = 7
+21 threads : time = 7
+22 threads : time = 7
+23 threads : time = 11
+24 threads : time = 8
+25 threads : time = 11
+26 threads : time = 10
+27 threads : time = 10
+28 threads : time = 11
+29 threads : time = 10
+30 threads : time = 11
