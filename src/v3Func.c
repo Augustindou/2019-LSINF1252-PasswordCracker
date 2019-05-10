@@ -144,7 +144,7 @@ void * sort(){
     if(err!=0){intError(err, "pthread_mutex_lock mutex2 error");}
       // critical zone 2
       removeFromBuffer(resRH, ProdCons2, N, true);
-      printf("mot: %s\n", resRH);
+      // printf("mot: %s\n", resRH);
     err = pthread_mutex_unlock(&mutex2);
     if(err!=0){intError(err, "pthread_mutex_unlock mutex2 error");}
     err = sem_post(&empty2); // a slot has been cleaned
@@ -204,7 +204,7 @@ void insertInBuffer(char * A, char * PC, int N, bool resRH){
   int sz;
   if(resRH){sz = SIZE_OF_STRING;}
   else{sz = SIZE_OF_HASH;}
-  
+
   for(int i=0; i<N; i++){
     counter=0;
     for(int j=0; j<sz; j++){
