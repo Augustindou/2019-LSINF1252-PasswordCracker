@@ -1,0 +1,1300 @@
+commit e5e9e774d727253bbe8600d540712318311f8100
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri May 10 17:07:35 2019 +0200
+
+    perfect :-)
+
+ Debug                                        | Bin 51816 -> 0 bytes
+ cracker                                      | Bin 44584 -> 0 bytes
+ makefile                                     |  42 ++++-
+ out.txt                                      |   0
+ results.txt                                  |  76 --------
+ src/{v3Func.c => functions.c}                |   4 +-
+ src/{v3.h => functions.h}                    |   0
+ src/{v3.c => main.c}                         |  12 +-
+ src/multiple_files.c                         | 114 ------------
+ src/v1.c                                     | 144 ---------------
+ src/v2.c                                     | 252 ---------------------------
+ src/v3Func.o                                 | Bin 37056 -> 0 bytes
+ src/v3Func_test                              | Bin 45176 -> 0 bytes
+ src/v3Func_test.c => tests/functions_tests.c |   9 +-
+ tests/functions_tests.o                      | Bin 0 -> 13000 bytes
+ v3WithH                                      | Bin 44720 -> 0 bytes
+ 16 files changed, 42 insertions(+), 611 deletions(-)
+
+commit 53439d768b4e6cfc1b8d964453ce368fab127aad
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri May 10 15:05:40 2019 +0200
+
+    all printf removed
+
+ cracker      | Bin 41114 -> 44584 bytes
+ src/v3.c     |  26 ++++++--------------------
+ src/v3.h     |   3 +--
+ src/v3Func.c |  30 +++++-------------------------
+ 4 files changed, 12 insertions(+), 47 deletions(-)
+
+commit d13269571d27c2a730b3cf892e5c8daf9912460f
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 14:12:11 2019 +0200
+
+    backToPrintingStuff
+
+ src/v3Func.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 97213b008e72f1fb547d326c40fb2191dc4c895b
+Merge: 32f6a7d 3678029
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 14:05:32 2019 +0200
+
+    Merge branch 'master' of github.com:Augustindou/2019-Projet-Stannou-Gussdou
+
+commit 32f6a7d522e3cf7c19e758d1e1c1ad83b8034a9e
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 14:05:28 2019 +0200
+
+    random
+
+ src/v3Func.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 3678029a93034197507439dcfc9448447e03e5ea
+Author: Augustin d'Oultremont <audoultremon@jabba.info.ucl.ac.be>
+Date:   Fri May 10 14:01:45 2019 +0200
+
+    jabba
+
+ cracker     | Bin 44720 -> 41114 bytes
+ out.txt     |   0
+ results.txt | 120 ++++++++++++++++++++++++++++++++++++++----------------------
+ 3 files changed, 76 insertions(+), 44 deletions(-)
+
+commit 214ef9b4612d439f1a2286a0840747ec3fff58b8
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 12:09:38 2019 +0200
+
+    deleted print
+
+ src/v3Func.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 966a670a137c18046b2680248bf937826768ed47
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 12:08:27 2019 +0200
+
+    bashTimes revision
+
+ bashTimes.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit da4595a54f2b25afede3b4b47bf9b41615a0d6db
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 12:01:28 2019 +0200
+
+    bashTimes changed
+
+ bashTimes.sh | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+commit c59ff9f77490761aa7552af5ceaac7d569681a91
+Author: Augustin d'Oultremont <audoultremon@jabba.info.ucl.ac.be>
+Date:   Fri May 10 11:55:05 2019 +0200
+
+    results
+
+ results.txt | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+
+commit 7e0dc246d560c123fed6d8adf00173387adea5ce
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 11:42:52 2019 +0200
+
+    correction bashTimes
+
+ bashTimes.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 94e4f1d5f838b84a5fabee912eff44400affed65
+Merge: 015e5fb 2547563
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 11:34:37 2019 +0200
+
+    Merge branch 'master' of github.com:Augustindou/2019-Projet-Stannou-Gussdou
+
+commit 015e5fb6cb3744d241e7cb38e426f5bf81a93746
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 11:34:27 2019 +0200
+
+    testTiming
+
+ .gitignore   |  3 ++-
+ bashTimes.sh | 11 +++++++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+commit 254756347ef5aeb96f3b1586884755efd91580e8
+Merge: 173ac7f 49b229f
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri May 10 11:26:30 2019 +0200
+
+    Merge branch 'master' of https://github.com/Augustindou/2019-Projet-Stannou-Gussdou
+
+commit 173ac7f02e986403cc565260575fe03441dbd59b
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri May 10 11:26:20 2019 +0200
+
+    two more tested
+
+ src/v3Func.c      |   7 +++---
+ src/v3Func_test   | Bin 45040 -> 45176 bytes
+ src/v3Func_test.c |  67 ++++++++++++++++++++++++++++++++++++++++++++++--------
+ 3 files changed, 62 insertions(+), 12 deletions(-)
+
+commit 49b229f2afdad218866981eba4c3cc78d70165c3
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 10:00:35 2019 +0200
+
+    makefile
+
+ makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+commit 9dfab0252a8e14b249e877e41b8582ca0b0b3251
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri May 10 09:16:31 2019 +0200
+
+    getSemValue in cunit implemented
+
+ src/v3.h          |   3 +--
+ src/v3Func.c      |   2 +-
+ src/v3Func_test   | Bin 44816 -> 45040 bytes
+ src/v3Func_test.c |  51 ++++++++++++++++++++++++++++++++++++++++++++++-----
+ 4 files changed, 48 insertions(+), 8 deletions(-)
+
+commit c13aea36339761a498e0e55cfcdb882675927a35
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri May 10 08:58:13 2019 +0200
+
+    divide v3.c in two file, one main an the other for subfunctions
+
+ cracker                                | Bin 44720 -> 44720 bytes
+ src/strlenVo.c                         |  13 -------------
+ src/strlenVo.o                         | Bin 1608 -> 0 bytes
+ src/strlenVo_test                      | Bin 13216 -> 0 bytes
+ src/v3.c                               |  23 -----------------------
+ src/v3.h                               |  21 ++++++++-------------
+ src/v3Func.c                           |  26 ++++++++++++++++++++++----
+ src/v3Func.o                           | Bin 0 -> 37056 bytes
+ src/v3Func_test                        | Bin 0 -> 44816 bytes
+ src/{strlenVo_test.c => v3Func_test.c} |   4 ++--
+ 10 files changed, 32 insertions(+), 55 deletions(-)
+
+commit 5edcfdebf15ed6fe907d38454000373809510e98
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri May 10 08:34:36 2019 +0200
+
+    placing all function except main in an other file
+
+ cracker      | Bin 44720 -> 44720 bytes
+ src/v3.c     | 335 +----------------------------------------------------------
+ src/v3.h     |  37 ++++++-
+ src/v3Func.c | 295 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ v3WithH      | Bin 0 -> 44720 bytes
+ 5 files changed, 336 insertions(+), 331 deletions(-)
+
+commit 64b1ab88502227dba4051692f8247df3293849a7
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri May 10 03:04:30 2019 +0200
+
+    try with one own function [CUnit]
+
+ cracker              | Bin 44720 -> 44720 bytes
+ src/CUnit/max.c      |   7 ---
+ src/CUnit/max.h      |   4 --
+ src/CUnit/max.o      | Bin 1240 -> 0 bytes
+ src/CUnit/max_test   | Bin 13144 -> 0 bytes
+ src/CUnit/max_test.c |  89 -------------------------------------
+ src/strlenVo.c       |  13 ++++++
+ src/strlenVo.o       | Bin 0 -> 1608 bytes
+ src/strlenVo_test    | Bin 0 -> 13216 bytes
+ src/strlenVo_test.c  | 121 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 10 files changed, 134 insertions(+), 100 deletions(-)
+
+commit 3a09d0b702e2cb57b940f6e1c5f97c4a0ec744db
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri May 10 02:24:01 2019 +0200
+
+    add example for CUnit
+
+ src/CUnit/max.c      |   7 ++++
+ src/CUnit/max.h      |   4 +++
+ src/CUnit/max.o      | Bin 0 -> 1240 bytes
+ src/CUnit/max_test   | Bin 0 -> 13144 bytes
+ src/CUnit/max_test.c |  89 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 100 insertions(+)
+
+commit 4a41de22dc268df7e3784e787372f93a798572f4
+Merge: c12152d ec13827
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri May 10 01:29:55 2019 +0200
+
+    errno last part merged
+
+commit c12152df7d53cae2ef78f0a6b5c8e536af7d279a
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri May 10 01:28:20 2019 +0200
+
+    errno last part
+
+ cracker  | Bin 44800 -> 44720 bytes
+ src/v3.c |  94 ++++++++++++++++++++++++++++++++++++++-------------------------
+ 2 files changed, 57 insertions(+), 37 deletions(-)
+
+commit ec138279e6737b7437a92faa775ae4f3b23c7978
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 01:18:46 2019 +0200
+
+    change error string reverse hash
+
+ src/v3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 8d0ffe6be66d4ab32e2fe8ceeca8f38a6e5cc100
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 01:01:21 2019 +0200
+
+    reversehash error correction
+
+ src/v3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 24055184d62fa51f67ca5adb485cfd6dabf3571c
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 00:27:04 2019 +0200
+
+    global vars back in v3.c (from v3.h)
+
+ src/v3.c | 35 +++++++++++++++++++++++++++++++++++
+ src/v3.h | 37 +------------------------------------
+ 2 files changed, 36 insertions(+), 36 deletions(-)
+
+commit 712a05d128bee528b70536effc35671d148bc7db
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 00:24:10 2019 +0200
+
+    correction of small weird errors
+
+ src/v3.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+commit be8fe7193fbc95df60e7ce58d092b8c14c950fdb
+Merge: a226eca 172a0d2
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 00:22:21 2019 +0200
+
+    Merge branch 'master' of github.com:Augustindou/2019-Projet-Stannou-Gussdou
+
+commit a226ecabce4fc8b4aabde54c2c2c43c8e40bd68a
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri May 10 00:22:17 2019 +0200
+
+    comments and v3.h
+
+ src/v3.c | 189 ++---------------------------------------------------------
+ src/v3.h | 199 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 203 insertions(+), 185 deletions(-)
+
+commit 172a0d2d186c115ae7c4f5834dc4ff94ad272113
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Thu May 9 20:03:21 2019 +0200
+
+    small comments
+
+ src/v3.c | 32 +++++++++-----------------------
+ 1 file changed, 9 insertions(+), 23 deletions(-)
+
+commit 73419a2ea581765a669dd8e6587fed6c4d3573d2
+Merge: db6a6e3 7dbeada
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Thu May 9 19:15:33 2019 +0200
+
+    part 3 errno
+
+commit db6a6e3de0a01299143cc58e318b1756e6ff41c2
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Thu May 9 19:13:03 2019 +0200
+
+    commit to pull
+
+ Debug    | Bin 0 -> 51816 bytes
+ cracker  | Bin 44800 -> 44800 bytes
+ src/v3.c |  68 +++++++++++++++++++++++++++++----------------------------------
+ 3 files changed, 31 insertions(+), 37 deletions(-)
+
+commit 7dbeada3db1b5cd307d4f2ac21088c1e8ce41565
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Thu May 9 19:11:12 2019 +0200
+
+    DEFINE + minor changes
+
+ src/v3.c | 115 ++++++++++++++++++++++++++++++++-------------------------------
+ 1 file changed, 58 insertions(+), 57 deletions(-)
+
+commit 1f66539fcba20bcd56a6b21e4fdcc5e56e914c26
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Thu May 9 18:49:24 2019 +0200
+
+    comments
+
+ src/v3.c | 249 ++++++++++++++++++++++++++++++++-------------------------------
+ 1 file changed, 125 insertions(+), 124 deletions(-)
+
+commit 5aa2f66af470834573b36df8dc8d492013705f0f
+Merge: f5d81ae c1b076a
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Thu May 9 15:05:30 2019 +0200
+
+    Merge branch 'master' of github.com:Augustindou/2019-Projet-Stannou-Gussdou
+
+commit f5d81ae9c81f841492e30af67fb5161136f4acff
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Thu May 9 15:05:03 2019 +0200
+
+    modif makefile
+
+ makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit c1b076ab0bfd741a51087478e982c37d7712fce6
+Merge: ea92b52 2a868aa
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Thu May 9 13:57:16 2019 +0200
+
+    Merge branch 'master' of https://github.com/Augustindou/2019-Projet-Stannou-Gussdou
+
+commit ea92b52254d8b889e0a3d57e61d133be1006656a
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Thu May 9 13:56:14 2019 +0200
+
+    errno part2
+
+ cracker  | Bin 44856 -> 44800 bytes
+ src/v3.c | 117 ++++++++++++++++++++-------------------------------------------
+ 2 files changed, 37 insertions(+), 80 deletions(-)
+
+commit 2a868aa5c610c9c1a932287fd6c526a40a36ae18
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Thu May 9 13:55:30 2019 +0200
+
+    comments
+
+ .gitignore |  3 +-
+ README.md  |  5 ++--
+ src/v3.c   | 98 ++++++++++++++++++++++++++++++++++++++++++++++++++------------
+ 3 files changed, 85 insertions(+), 21 deletions(-)
+
+commit bf10f7a3557968b2f3848eade3fbb4866e6f195f
+Merge: 3e062b7 c629812
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Thu May 9 12:03:12 2019 +0200
+
+    merge
+
+commit 3e062b7c8f44e04d6ef677417bde59f3ed3ca04f
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Thu May 9 11:59:31 2019 +0200
+
+    comments + remove
+
+ README.md |   2 +-
+ makefile  |   2 +-
+ src/v3.c  | 152 ++++++++++++++++++++++++++++++++++++--------------------------
+ 3 files changed, 91 insertions(+), 65 deletions(-)
+
+commit c629812733221195ad5631edd2ff75117646a61a
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Thu May 9 11:52:17 2019 +0200
+
+    errno part main
+
+ cracker  | Bin 40520 -> 44856 bytes
+ makefile |   5 +-
+ src/v3.c | 191 +++++++++++++++++++++++++++++++++++++--------------------------
+ 3 files changed, 115 insertions(+), 81 deletions(-)
+
+commit cceb062e08b3acb3ea2f401165a799df13b84021
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Thu May 9 10:04:54 2019 +0200
+
+    comments + readme
+
+ README.md | 10 +++++++---
+ src/v3.c  | 16 ++++++++++++----
+ 2 files changed, 19 insertions(+), 7 deletions(-)
+
+commit 191f63752963a7a6874877b28cd106a1aa2376c3
+Merge: 9a0bba9 dea6d43
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Thu May 9 00:37:17 2019 +0200
+
+    Merge branch 'master' of github.com:Augustindou/2019-Projet-Stannou-Gussdou
+
+commit 9a0bba9894cefaa52aebd13c3d2a36742a15de6e
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Thu May 9 00:37:14 2019 +0200
+
+    delete v4
+
+ src/v4.c | 515 ---------------------------------------------------------------
+ 1 file changed, 515 deletions(-)
+
+commit dea6d436f1397d45810efe42ff12656db777a499
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Thu May 9 00:00:47 2019 +0200
+
+    multi file works
+
+ src/v3.c | 117 ++++++++++++++++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 83 insertions(+), 34 deletions(-)
+
+commit a12d21fcb7ebb350bf98ed6875405046d53169be
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Tue May 7 17:39:46 2019 +0200
+
+    added v4 changes to v3
+
+ src/v3.c | 45 ++++++++++++++-------------------------------
+ 1 file changed, 14 insertions(+), 31 deletions(-)
+
+commit efd0511c62124412ba0ea14eea0065aa29a975b0
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Tue May 7 17:28:49 2019 +0200
+
+    Readme + v4 + test
+
+ README.md                                        |   9 +
+ src/v4.c                                         | 515 +++++++++++++++++++++++
+ tests/test-function/test_InsertHash_RemoveHash.c |  35 +-
+ 3 files changed, 556 insertions(+), 3 deletions(-)
+
+commit 50fcd6a0919c0a467c6aa9de9a946b576a9ba205
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Tue May 7 16:55:56 2019 +0200
+
+    test multiple_files
+
+ src/multiple_files.c | 114 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 114 insertions(+)
+
+commit f5dcea80a5a656500df6bd4d790bbd72cd3b60bc
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Wed May 1 00:19:05 2019 +0200
+
+    time is working
+
+ cracker  | Bin 40520 -> 40520 bytes
+ src/v3.c |  10 +++++++---
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+commit 9df4b976acff3aebb4f3c0b5f481a505ebf5b47c
+Author: stanislasg <stanislas.gorremans@student.uclouvain.be>
+Date:   Wed May 1 00:02:08 2019 +0200
+
+    working program
+
+ cracker  | Bin 30576 -> 40520 bytes
+ src/v3.c | 106 ++++++++++++++++++++++++++++++++++++++++++++-------------------
+ 2 files changed, 75 insertions(+), 31 deletions(-)
+
+commit d0c93a9b3c9f084445f52cb2ddced9ce687f3332
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Fri Apr 26 14:45:57 2019 +0200
+
+    saveToFile implemented <3
+
+ src/v3.c | 696 ++++++++++++++++++++++++++++++++-------------------------------
+ 1 file changed, 356 insertions(+), 340 deletions(-)
+
+commit edf7ae5a4b9ccc2b546fea53e5f1b730578af171
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Tue Apr 23 15:52:35 2019 +0200
+
+    Suppressed old unuseful comments
+
+ src/v3.c | 43 ++-----------------------------------------
+ 1 file changed, 2 insertions(+), 41 deletions(-)
+
+commit 7a185a4d051f06a2865ac20b14b72122de64384d
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Tue Apr 23 15:17:26 2019 +0200
+
+    getOpt is now working
+
+ src/v3.c | 95 ++++++++++++++++++++++++++++++++++++++++++----------------------
+ 1 file changed, 62 insertions(+), 33 deletions(-)
+
+commit 595366fb0193d83649c2a89805a1f62fa2217a2a
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Mon Apr 22 15:10:06 2019 +0200
+
+    modified POP
+
+ src/v3.c | 47 +++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 33 insertions(+), 14 deletions(-)
+
+commit f1fa66de3130db6f50775dfb93ea6033dae4112a
+Merge: 9f80e43 70ea9c9
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Mon Apr 22 14:04:02 2019 +0200
+
+    merged changes + update readme
+
+commit 9f80e43d694152b6f5e5da22453fd44aa066ad4b
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Mon Apr 22 12:19:27 2019 +0200
+
+    check malloc worked + u_int8_t => uint8_t
+
+ src/v3.c                                         | 51 ++++++++++++------------
+ tests/test-function/test_InsertHash_RemoveHash.c | 31 +++++++-------
+ 2 files changed, 42 insertions(+), 40 deletions(-)
+
+commit 70ea9c988ddd96510ea84fc01e8d5854b6e307aa
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 23:06:08 2019 -0700
+
+    printf for debug and more comment for futur development
+
+ src/v3.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+commit c58c59e5e099a3b3963568571113b4fe4aa3b2f5
+Merge: 8d94d39 8cbf7db
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 22:36:05 2019 -0700
+
+    Merge branch 'master' of https://github.com/Augustindou/Projet_Stannou_Gussdou
+
+commit 8d94d392ce7c6a42a5fac80687fc34a843559979
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 22:35:06 2019 -0700
+
+    try to fix deadend in sort 5
+
+ src/v3.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+commit 8152283112734578322eedb361d06798c26da80b
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 22:32:05 2019 -0700
+
+    try to fix deadend in sort 4
+
+ src/v3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 5747c75f2126cb9edbc1cb037cb1bc52311654d1
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 22:31:14 2019 -0700
+
+    try to fix deadend in sort 3
+
+ src/v3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 94e4863de1c70427af252d8c0c65f2fa6708d2b2
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 22:29:47 2019 -0700
+
+    try to fix deadend in sort 2
+
+ src/v3.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 0be8dc9ec969a01366ed3eea759750e110fbfe27
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 22:20:00 2019 -0700
+
+    try to fix deadend in sort
+
+ src/v3.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+commit 8cbf7dbeaaddee2c6f386b3e9cf6f3d651cdf0a7
+Author: Augustindou <44368825+Augustindou@users.noreply.github.com>
+Date:   Sun Apr 21 22:34:14 2019 +0200
+
+    Update README.md
+
+ README.md | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+commit b0d0588667ff7fd2f3a6cd379b3898eead9b6184
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 11:46:29 2019 -0700
+
+    to smaller cons[i] quint
+
+ src/v3.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit b9e3cff75bda7562e8e7fb4ec307059e33033806
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 11:42:36 2019 -0700
+
+    to smaller cons[i] quat
+
+ src/v3.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 992efdfa11cc351b189faa0110e20ecfb6e560ad
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 11:39:44 2019 -0700
+
+    to smaller cons[i] ter
+
+ src/v3.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 04bc67705dbc27ef7d48b028e19c5525cbebc8cb
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 11:37:17 2019 -0700
+
+    to smaller cons[i] bis
+
+ src/v3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit b29f53cdb041dbc855b7b07fc56977abff311e07
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 11:32:12 2019 -0700
+
+    to smaller cons[i]
+
+ src/v3.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 0a5c2ac17bae76d348446ea8b2c0e0e39b34d40c
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 11:25:56 2019 -0700
+
+    still again more printf
+
+ src/v3.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit 839660c21a71842c3723f48778ce76789483f38b
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 11:21:53 2019 -0700
+
+    again more printf
+
+ src/v3.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+commit 3f7f226c0c90279a6185c55673e02817620557a4
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sun Apr 21 11:14:39 2019 -0700
+
+    more printf
+
+ src/v3.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+commit 8d6d17ae8f72981cebe4e7024ec907715f569761
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 19:44:07 2019 -0700
+
+    v3.c is working
+
+ makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 8b06d002d3e561dedf2800975cecb1d89cb2ea67
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 19:32:41 2019 -0700
+
+    test consonne g in V3.c
+
+ src/v3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 1c79f09034ce3bc46aefd8c2b6ac2e50079a84b2
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 19:31:34 2019 -0700
+
+    test consonne f in V3.c
+
+ src/v3.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+commit 38740070ad32a9079daab56df9a85c429627bf3b
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 19:29:38 2019 -0700
+
+    test consonne e in V3.c
+
+ src/v3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 2c928e1dc2247a647190c1442d14e746789c8f8d
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 19:27:49 2019 -0700
+
+    test consonne d in V3.c
+
+ src/v3.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 0dbc67e7c15d4844a9a6c5959eb5eb0d8f6d3bb1
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 19:23:55 2019 -0700
+
+    test consonne c in V3.c
+
+ src/v3.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+commit c0ab13ec15df335f761e70326bddabc1ec0c50be
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 18:31:04 2019 -0700
+
+    test consonne b in V3.c
+
+ src/v3.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 0e0b60519989ec0b5deabcf860ffd206e4992414
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 18:29:17 2019 -0700
+
+    test consonne in V3.c
+
+ src/v3.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+commit 4b34e7da888585ca9a7afc9c07c2beaf0760f559
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 18:04:16 2019 -0700
+
+    test struct b in V3.c
+
+ src/v3.c                          | 10 +++++-----
+ tests/test-function/test_Struct.c |  2 ++
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+
+commit b85cbe07d28622663a7a7307bbb850541c1ea012
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 17:57:11 2019 -0700
+
+    test struct in V3.c
+
+ src/v3.c | 34 ++++++++++++++++++++--------------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
+
+commit f720c4c73d3959b4824431d14c63e5085ca504a3
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 17:52:17 2019 -0700
+
+    test struct f
+
+ tests/test-function/test_Struct.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 1fa19a323741a728ea39c230af57175463290c97
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 17:51:27 2019 -0700
+
+    test struct e
+
+ tests/test-function/test_Struct.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+commit 45dbaa1c6e4e5e90ef7e01d46f9e41b095215f52
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 17:49:02 2019 -0700
+
+    test struct d
+
+ tests/test-function/test_Struct.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+commit 107f37c39f6a9675aea425ecea4d69f03b9805aa
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 17:47:03 2019 -0700
+
+    test struct c
+
+ tests/test-function/test_Struct.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+commit c9a66388ccd73ece7abaa4fd426b556fc27e09cd
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 17:39:47 2019 -0700
+
+    test struct b
+
+ tests/test-function/test_Struct.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+commit d251ca4bafd7f2820f66d0bef49053e827cf3921
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 17:35:03 2019 -0700
+
+    test struct
+
+ tests/test-function/test_Struct.c | 67 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+
+commit 3768268deb7235a75f40240247f809ba84b50d91
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 17:23:14 2019 -0700
+
+    a better definition
+
+ src/v3.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 1fd6be2161c4209c92b0405df2685dc9735abdf4
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 17:21:20 2019 -0700
+
+    better definition
+
+ src/v3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 2e1f48264edde2279248cf9c0dd347db214d2ab2
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 17:15:01 2019 -0700
+
+    try stack
+
+ src/v3.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
+
+commit cb82f04734340eba8e707a2765e26dd40eb0f053
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 16:30:31 2019 -0700
+
+    start of v3.c
+
+ src/v3.c | 410 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 410 insertions(+)
+
+commit 2f3ce8d3aad24e3a1af8a14215673e217aeb5111
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 16:30:00 2019 -0700
+
+    start of v3.c
+
+ makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 3b9a92283a6e54ffeddddb03ab2e7b99975fd476
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 15:14:38 2019 -0700
+
+    try a second time, first time success
+
+ src/v2.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
+
+commit 1499d366e810204afe8a2c2ef5f6f2ae9e267a22
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 15:10:26 2019 -0700
+
+    still again try to fix file closing
+
+ src/v2.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+commit 698ca45361864ca2c705252aad9cdead8eadf12c
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 15:04:19 2019 -0700
+
+    still try to fix file closing
+
+ src/v2.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+commit da7eafda867af537796ea61320d9466b56b31672
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 14:56:54 2019 -0700
+
+    again try to fix file closing
+
+ src/v2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit c388366d578669dc151979f4126d866090e8c8c1
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 14:52:15 2019 -0700
+
+    try to fix file closing
+
+ src/v2.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+commit 0673fac850902a9f9f2b387da35aeab088880e27
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 14:44:22 2019 -0700
+
+    good pthread, now hopefully no errors at the end
+
+ src/v2.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit aed8024347ac1a505210cee012943401e420e451
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 20 14:29:59 2019 -0700
+
+    correction of implicite declarations
+
+ src/v2.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+commit 5aa6ba2f3957c19965a3bb55d3351c916b7fafbe
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri Apr 19 21:51:46 2019 -0700
+
+    again
+
+ src/v2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit dfd50241de71f6596ad1d5a1cf6d70fd382f5dda
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri Apr 19 21:46:45 2019 -0700
+
+    again a little commit
+
+ src/v2.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+commit 4f329ca0a40a789d1f58851536177a10ce5513fc
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri Apr 19 21:41:02 2019 -0700
+
+    car update
+
+ src/v2.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
+
+commit 0aab35eaae174c7595f346e5fb802ef5a316eb8e
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri Apr 19 21:29:47 2019 -0700
+
+    upgrade v2 in the car
+
+ src/v2.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+commit 2a51eca4873a9d09f7fe6bec93c82085f1873a24
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri Apr 19 21:20:42 2019 -0700
+
+    v2 update
+
+ src/v2.c | 27 +++++++++++++++------------
+ 1 file changed, 15 insertions(+), 12 deletions(-)
+
+commit d920ab3df207ff60304c7de661aa236f118cacf8
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri Apr 19 17:31:05 2019 -0700
+
+    correction of errors in v2.c
+
+ src/v2.c | 56 +++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 51 insertions(+), 5 deletions(-)
+
+commit ddbe28e9fb7dff59892d845a991f01370c3a6c70
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri Apr 19 17:14:09 2019 -0700
+
+    new tests of functions
+
+ tests/test-function/test_InsertHash_RemoveHash.c | 139 +++++++++++++++++++++++
+ tests/test-function/test_Semaphore.c             |  14 +++
+ 2 files changed, 153 insertions(+)
+
+commit bd3b034c8ec99f60be8845616f66c1cab76efc3c
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri Apr 19 17:10:48 2019 -0700
+
+    upgrade v2.c
+
+ src/v2.c | 88 +++++++++++++++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 57 insertions(+), 31 deletions(-)
+
+commit b080f9b8c9fa2147fd6604a0f5ad2e98847fc59a
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Fri Apr 19 11:15:40 2019 -0700
+
+    insert hash in ProdCons
+
+ src/v2.c | 124 ++++++++++++++++++++++++++++++++++++---------------------------
+ 1 file changed, 71 insertions(+), 53 deletions(-)
+
+commit bc66d2a478991d9f956110738b97f67102225753
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Wed Apr 17 21:23:37 2019 +0200
+
+    gitignore
+
+ .gitignore | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 5e8c56930857dfa56fae8cabe501c6984ca5e68f
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Wed Apr 17 18:27:57 2019 -0700
+
+    recommit penser polythread avec v2.c
+
+ .vs/Projet_Stannou_Gussdou/v16/.suo | Bin 0 -> 4608 bytes
+ src/v2.c                            | 144 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 144 insertions(+)
+
+commit 64602a201f0dd4bf45e3fe6b06e5ea2f2b124be4
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Wed Apr 17 18:26:30 2019 -0700
+
+    penser en polythread avec v2.c
+
+ src/prod_cons.c | 52 ----------------------------------------------------
+ src/v1.c        | 31 ++-----------------------------
+ 2 files changed, 2 insertions(+), 81 deletions(-)
+
+commit 8bba9f718fcce091dbf33802405fbb61d1ecec32
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Wed Apr 17 18:21:07 2019 -0700
+
+    supprimer des commentaires dans v1.c
+    commencer à penser le code en v2.c
+
+ .gitignore | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+commit cd642407718c0c604e67624bc7568dbcabfdc43f
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Wed Apr 17 15:08:33 2019 +0200
+
+    Test
+
+ README.md | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 43a1e01c8fc867302fe509f1a9e01d5f1f9c5ca6
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Wed Apr 17 15:07:34 2019 +0200
+
+    Test
+
+ README.md | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 9d9f44839fbcc3773e63d44a43d391d59d642ae0
+Author: Stanislas Gorremans <sgorremans@yoda.info.ucl.ac.be>
+Date:   Wed Apr 17 13:44:56 2019 +0200
+
+    amélioration de prod_cons.c
+
+ cracker         | Bin 12976 -> 30576 bytes
+ src/prod_cons.c |  30 +++++++++++++++++++++---------
+ 2 files changed, 21 insertions(+), 9 deletions(-)
+
+commit 23e0f3af7a51b87fdeca2dd139d055a2922cea98
+Merge: de36548 bd570bf
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Wed Apr 17 13:18:58 2019 -0700
+
+    Merge branch 'master' of https://github.com/Augustindou/Projet_Stannou_Gussdou
+
+commit de365482d6e43248ddf016589ebcbfd34c49c68e
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Wed Apr 17 13:17:54 2019 -0700
+
+    test probleme prod _ cons
+
+ src/prod_cons.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+
+commit d977726b9625d16dd3e925125cd54901499b8a0e
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Wed Apr 17 12:13:41 2019 -0700
+
+    new reserveHash
+
+ src/reverse.c | 3 ++-
+ src/reverse.h | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+commit bd570bfc271d7e9c561f023df60d261540f21f22
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Wed Apr 17 12:54:12 2019 +0200
+
+    1 threaded reverse hash (printf)
+
+ src/v1.c | 34 ++++++++++++++++++----------------
+ 1 file changed, 18 insertions(+), 16 deletions(-)
+
+commit f8ff368531197cfc51b58a89171bf89cb83c4e08
+Merge: a93dbdb d977726
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Wed Apr 17 12:19:32 2019 +0200
+
+    Merge branch 'master' of https://github.com/Augustindou/Projet_Stannou_Gussdou
+
+commit a93dbdbc422c2e11a66b478d73df9fc70843e5b0
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Wed Apr 17 12:17:20 2019 +0200
+
+    include stddef.h
+
+ src/reverse.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit af0957bf95410f268df2fb07d05c084786bf7938
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Wed Apr 17 12:16:43 2019 +0200
+
+    file reading tryouts
+
+ src/v1.c | 45 ++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 34 insertions(+), 11 deletions(-)
+
+commit 290985b59112b9b69d91ba327bf342f731590ee2
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Wed Apr 17 10:29:41 2019 +0200
+
+    README and begin readfile
+
+ README.md | 14 +++++++++++++-
+ src/v1.c  | 39 +++++++++++++++++++++++++++------------
+ 2 files changed, 40 insertions(+), 13 deletions(-)
+
+commit 972c207f484255b36d87eceaba7bdb6dcfd592c5
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Wed Apr 17 09:22:55 2019 +0200
+
+    test
+
+ cracker                       |  Bin 0 -> 12976 bytes
+ makefile                      |    5 +
+ src/reverse.c                 |   49 ++
+ src/reverse.h                 |   18 +
+ src/sha256.c                  |  563 +++++++++++++++++++++++
+ src/sha256.h                  |   91 ++++
+ src/v1.c                      |   10 +-
+ tests/test-input/01_4c_1k.bin |  Bin 0 -> 32000 bytes
+ tests/test-input/01_4c_1k.txt | 1000 +++++++++++++++++++++++++++++++++++++++++
+ tests/test-input/02_6c_5.bin  |    5 +
+ tests/test-input/02_6c_5.txt  |    5 +
+ 11 files changed, 1741 insertions(+), 5 deletions(-)
+
+commit 77e653b4674caa978cd078d6a151f74cd18af615
+Merge: cf1f35c d995a0b
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Tue Apr 16 23:29:33 2019 +0200
+
+    added comments
+
+commit cf1f35c33b94f8f531393d67fbccc7c9a0b012f4
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Tue Apr 16 23:17:27 2019 +0200
+
+    Nothing
+
+ README.md | 0
+ v1.c      | 0
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+
+commit d995a0ba7669b085a17365dbc6c64100e926d3e4
+Author: Stanislas Gorremans <sgorremans@yoda.info.ucl.ac.be>
+Date:   Sat Apr 6 23:21:18 2019 +0200
+
+    get info form bash much better
+
+ cracker  | Bin 0 -> 13192 bytes
+ makefile |   2 +-
+ src/v1.c | 103 ++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+ test.txt |   1 -
+ 4 files changed, 86 insertions(+), 20 deletions(-)
+
+commit 1f2bafd54f56444e259eae431e9abf0447e665fe
+Author: stanislas <stanislas.gorremans@student.uclouvain.be>
+Date:   Sat Apr 6 15:25:22 2019 -0700
+
+    add template teacher, with reverseHash and tests bin files
+
+ makefile                      |    4 +-
+ src/reverse.c                 |   49 ++
+ src/reverse.h                 |   18 +
+ src/sha256.c                  |  563 +++++++++++++++++++++++
+ src/sha256.h                  |   91 ++++
+ v1.c => src/v1.c              |    0
+ tests/test-input/01_4c_1k.bin |  Bin 0 -> 32000 bytes
+ tests/test-input/01_4c_1k.txt | 1000 +++++++++++++++++++++++++++++++++++++++++
+ tests/test-input/02_6c_5.bin  |    5 +
+ tests/test-input/02_6c_5.txt  |    5 +
+ 10 files changed, 1733 insertions(+), 2 deletions(-)
+
+commit b72a700b79fc4f28cdf2b2a5defac4c9465448da
+Author: Stanislas Gorremans <sgorremans@yoda.info.ucl.ac.be>
+Date:   Thu Apr 4 13:35:37 2019 +0200
+
+    add reading a file
+
+ make_me  | Bin 8680 -> 0 bytes
+ makefile |   6 ++---
+ test.txt |   1 +
+ v1.c     |  84 ++++++++++++++++++++++++++++++++++++++++++++++-----------------
+ 4 files changed, 65 insertions(+), 26 deletions(-)
+
+commit f62ac2ec3cb34a5f4a923234bd915f5c666b69ff
+Author: Stanislas Gorremans <sgorremans@yoda.info.ucl.ac.be>
+Date:   Thu Apr 4 11:03:55 2019 +0200
+
+    import io in v1.c, now printf works
+
+ make_me | Bin 8528 -> 8680 bytes
+ v1.c    |   9 +++++++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+commit b95496ddbe807422726b49d45e14c53e146cf333
+Author: Stanislas Gorremans <sgorremans@yoda.info.ucl.ac.be>
+Date:   Thu Apr 4 10:51:56 2019 +0200
+
+    correct the makefile error and add clean option
+
+ MakeFile => makefile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 06444ca907600909035721e8abf817f54994c418
+Author: Stanislas Gorremans <sgorremans@yoda.info.ucl.ac.be>
+Date:   Thu Apr 4 10:02:03 2019 +0200
+
+    Creation of a MakeFile with a random v1.c code
+
+ MakeFile |   3 +++
+ make_me  | Bin 0 -> 8528 bytes
+ v1.c     |  21 +++++++++++++++++++++
+ 3 files changed, 24 insertions(+)
+
+commit 9c327cf59678152ba37dd9f92f147f03384babcd
+Author: augustindou <augustin.doultremontao@gmail.com>
+Date:   Tue Apr 2 15:14:36 2019 +0200
+
+    Added first file
+
+ v1.c | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 428d3a40991b2452244530e19d72fdd1efbeb4ee
+Author: Augustindou <44368825+Augustindou@users.noreply.github.com>
+Date:   Tue Apr 2 15:04:38 2019 +0200
+
+    Initial commit
+
+ README.md | 1 +
+ 1 file changed, 1 insertion(+)

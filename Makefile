@@ -26,8 +26,8 @@ debug: src/main.c
 	cc $(flags) -o debug src/main.c $(libs)
 #clean
 clean:
-	rm cracker
-	rm debug
+	rm -f cracker
+	rm -f debug
 
 
 
