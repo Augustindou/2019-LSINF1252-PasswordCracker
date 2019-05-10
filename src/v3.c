@@ -1,27 +1,4 @@
-#define SIZE_OF_HASH 32
-#define SIZE_OF_STRING 17
-
-#include "reverse.h"
-#include "reverse.c"
-#include "sha256.c"
-#include "sha256.h"
-
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <pthread.h>
-#include <stdbool.h>
-#include <unistd.h>
-#include <semaphore.h>
-#include <getopt.h>
-#include <time.h>
-#include <errno.h>
-
-
 #include "v3Func.c"
-
-
 
 //TODO : COMMENT MAIN ??? ------------------------------------------------------
 int main(int argc, char *argv[]){

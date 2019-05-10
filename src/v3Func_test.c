@@ -12,8 +12,8 @@
 download CUnit with  http://cunit.sourceforge.net/
 
 type to run the test :
-gcc -Wall -c strlenVo.c
-gcc -Wall -pthread -L/usr/local/lib -o strlenVo_test strlenVo_test.c strlenVo.o -lcunit -std=c99
+gcc -Wall -c v3Func.c
+gcc -Wall -pthread -L/usr/local/lib -o v3Func_test v3Func_test.c v3Func.o -lcunit -std=c99
 ./strlenVo_test
 
 source: http://wpollock.com/CPlus/CUnitNotes.htm

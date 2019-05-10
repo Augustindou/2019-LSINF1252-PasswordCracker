@@ -1,8 +1,26 @@
 #include "v3.h"
+#include "reverse.c"
+#include "reverse.h"
+#include "sha256.c"
+#include "sha256.h"
+
+
+bool OutputToFile = false;
+/* Number of threads */
+int N = 1;
+/* First buffer (before reverseHash)*/
+u_int8_t * ProdCons;
+/* consonne == true if case of consonants */
+bool consonne = false;
+/* Number of threads that finished reverseHash */
+int consFinish = 0;
+/* counter for number of files read */
+int finishProd=0;
+
 
 //readFile
-uint8_t* readBinFile(FILE* file, uint8_t * hash){
-  if(fread(hash, sizeof(uint8_t), SIZE_OF_HASH, file)==SIZE_OF_HASH){
+u_int8_t* readBinFile(FILE* file, u_int8_t * hash){
+  if(fread(hash, sizeof(u_int8_t), SIZE_OF_HASH, file)==SIZE_OF_HASH){
     return hash;
   }
   else{
@@ -31,7 +49,7 @@ void * producer(void * arg){
     if(!file){stringError("input file didn't open correctly");}
     printf("file is open[%d], %s\n",i, ARGV[i] );
 
-    uint8_t * hash = malloc(sizeof(char)*SIZE_OF_HASH);
+    u_int8_t * hash = malloc(sizeof(char)*SIZE_OF_HASH);
     if(!hash){stringError("malloc ARG error");}
     bool test=true;
     while(test){
@@ -62,7 +80,7 @@ void * producer(void * arg){
 
 // Consomer, most of prossesor time
 void * consumer(){
-  uint8_t * hash = malloc(sizeof(char)*SIZE_OF_HASH);
+  u_int8_t * hash = malloc(sizeof(char)*SIZE_OF_HASH);
   if(hash==NULL){stringError("malloc hash error");}
   char * resRH = malloc(sizeof(char)*SIZE_OF_STRING);
   if(resRH==NULL){stringError("malloc resRH error");}

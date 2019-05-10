@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
@@ -143,7 +142,7 @@ int getSemValue(sem_t * sem);
  *
  * @return pointer to hash
  */
-uint8_t* readBinFile(FILE* file, uint8_t * hash);
+u_int8_t* readBinFile(FILE* file, u_int8_t * hash);
 
 /*---------------------------------------------------------------------------*/
 /*     Error handling functions                                              */
@@ -166,15 +165,14 @@ void stringError (char *msg);
 /*---------------------------------------------------------------------------*/
 /*     Variables                                                             */
 /*---------------------------------------------------------------------------*/
+#define SIZE_OF_HASH 32
+#define SIZE_OF_STRING 17
 
 /* file for input files ; outFile for output file */
 FILE* file;
 FILE* outFile;
-bool OutputToFile = false;
-/* Number of threads */
-int N = 1;
-/* First buffer (before reverseHash) and related mutex and semaphores */
-uint8_t * ProdCons;
+
+
 pthread_mutex_t mutex;
 sem_t empty;
 sem_t full;
@@ -183,14 +181,11 @@ char * ProdCons2;
 pthread_mutex_t mutex2;
 sem_t empty2;
 sem_t full2;
-/* counter for number of files read */
-int finishProd=0;
-/* consonne == true if case of consonants */
-bool consonne = false;
+
+
 /* Mutex to handle sort condition */
 pthread_mutex_t mutex3;
-/* Number of threads that finished reverseHash */
-int consFinish = 0;
+
 /* Head of the password stack */
 struct node * head;
 /* Number of input files */
