@@ -6,3 +6,7 @@ debug: src/v3.C
 
 clean:
 	rm cracker
+
+tests: src/v3Func_test.c
+	gcc -Wall -c src/v3Func.c
+	gcc -Wall -pthread -L/usr/local/lib -o src/v3Func_test src/v3Func_test.c src/v3Func.o -lcunit -std=c99
