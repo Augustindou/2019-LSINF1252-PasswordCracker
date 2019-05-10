@@ -1,11 +1,10 @@
-#include "v3Func.c"
+#include "functions.c"
 
-//TODO pre post
+
 int main(int argc, char *argv[]){
     //set a timer
     //time_t start =time(0);
 
-    //TODO check if with argument but no input file -------------------------------------
     if(argc<=1){
       stringError("the function needs at least one argument");
     }
@@ -27,7 +26,7 @@ int main(int argc, char *argv[]){
           OutputToFile = true;
           outFile = fopen(optarg, "w");
           if(outFile==NULL){
-            intError(0,"error with opening the output file"); //TODO can be better
+            intError(0,"error with opening the output file");
           }
           break;
         case '?':
@@ -67,9 +66,6 @@ int main(int argc, char *argv[]){
     err = pthread_mutex_init(&mutex3, NULL);
     if(err!=0){intError(err, "pthread_mutex_init of mutex3");}
 
-
-
-    //TODO pas oublier de fermer le fichier en cas d'erreur
 
   //START OF CODE
 
@@ -116,7 +112,7 @@ int main(int argc, char *argv[]){
     saveToFile(&head, outFile);
     err = fclose(outFile);
     if(err!=0){
-      pop(&head); // TODO on devrait faire le pop avant chaque return de la main enft...
+      pop(&head);
       intError(err, "fclose(outFile)");
     }
   }

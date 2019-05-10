@@ -4,7 +4,7 @@
 //#include "CUnit/Console.h"
 
 //so can pick function signature
-#include "v3.h"
+#include "../src/functions.c"
 
 #include <stdio.h>  // for printf
 #include <string.h>
@@ -12,14 +12,7 @@
 /*
 download CUnit with  http://cunit.sourceforge.net/
 
-type to run the test :
-gcc -Wall -c v3Func.c
-gcc -Wall -pthread -L/usr/local/lib -o v3Func_test v3Func_test.c v3Func.o -lcunit -std=c99
-./strlenVo_test
-
 source: http://wpollock.com/CPlus/CUnitNotes.htm
-doesn't work with main, don't think you need to test the main function
-TODO with all functions, but how!?
 */
 
 

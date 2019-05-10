@@ -1,4 +1,4 @@
-#include "v3.h"
+#include "functions.h"
 #include "reverse.c"
 #include "reverse.h"
 #include "sha256.c"
@@ -250,7 +250,7 @@ int strlenVo(char* candidate, bool consonant){
   return vowels;
 }
 
-//TODO from int to void
+
 int saveToFile(struct node ** head, FILE * outputFile){
   struct node * first = *head;
   while(first){

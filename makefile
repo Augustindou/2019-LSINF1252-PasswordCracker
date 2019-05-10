@@ -1,12 +1,40 @@
-all: src/v3.c
-	gcc -pthread -o cracker src/v3.c -std=c99
+flags = -Wall -Werror
+libs = -lpthread -lrt -lm -std=c99
 
-debug: src/v3.C
-	gcc -g -Wall -pthread -o Debug src/v3.c -std=c99
 
+#cracker
+cracker: src/main.c
+	cc $(flags) -o cracker src/main.c $(libs)
+
+#all
+all: cracker tests
+
+#tests
+tests: functions.o functions_tests.o
+	rm src/functions.o
+	rm test
+
+functions.o:src/functions.c
+	cc $(flags) -c src/functions.c $(libs) -o src/functions.o
+
+functions_tests.o:tests/functions_tests.c
+	cc $(flags) -o test tests/functions_tests.c -lcunit $(libs)
+	./test
+
+#debug
+debug: src/main.c
+	cc $(flags) -o debug src/main.c $(libs)
+#clean
 clean:
 	rm cracker
+	rm debug
 
-tests: src/v3Func_test.c
-	gcc -Wall -c src/v3Func.c
-	gcc -Wall -pthread -L/usr/local/lib -o src/v3Func_test src/v3Func_test.c src/v3Func.o -lcunit -std=c99
+
+
+
+
+
+
+
+
+
