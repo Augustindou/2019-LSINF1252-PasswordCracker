@@ -279,17 +279,17 @@ int saveToFile(struct node ** head, FILE * outputFile){
 
 
 bool sortCond(){
-  //printf("I'm checking sortCond\n");
+  printf("I'm checking sortCond\n");
   if(getSemValue(&empty2) != N){
-    //printf("SV\n");
+    printf("SV\n");
     return true;
   }
   else if(pthread_mutex_trylock(&mutex3) == 0) {
     err=pthread_mutex_unlock(&mutex3);
     if(err!=0){intError(err, "pthread_mutex_unlock mutex3 error");}
-    //printf("TL, consFinish = %d\n",consFinish);
+    printf("TL, consFinish = %d\n",consFinish);
     if(consFinish >= N){
-      //printf("return false in CondSort\n");
+      printf("return false in CondSort\n");
       return false;
     }
     return true;
